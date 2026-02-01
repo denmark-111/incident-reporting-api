@@ -27,7 +27,6 @@ class StoreReportRequest extends FormRequest
             'description' => 'required|string',
             'location'    => 'nullable|string|max:255',
             'evidence'    => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120', // 5MB max
-            'status'      => 'nullable|in:pending,in_progress,resolved',
         ];
     }
 }

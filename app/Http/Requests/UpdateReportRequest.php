@@ -27,7 +27,6 @@ class UpdateReportRequest extends FormRequest
             'description' => 'sometimes|required|string',
             'location'    => 'sometimes|nullable|string|max:255',
             'evidence'    => 'sometimes|nullable|file|mimes:jpg,jpeg,png,pdf|max:5120', // 5MB max
-            'status'      => 'sometimes|in:pending,in_progress,resolved',
         ];
     }
 }

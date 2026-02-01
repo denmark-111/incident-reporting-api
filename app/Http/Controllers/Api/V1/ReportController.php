@@ -32,7 +32,10 @@ class ReportController extends Controller
             $data['evidence_path'] = $path;
         }
 
-        $report = Report::create($data);
+        $report = Report::create(array_merge(
+            $data,
+            ['status' => 'pending']
+        ));
 
         return ReportResource::make($report)
             ->additional(['message' => 'Report created successfully'])
