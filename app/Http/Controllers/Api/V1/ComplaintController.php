@@ -2,27 +2,27 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Models\Report;
+use App\Models\Complaint;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ReportResource;
+use App\Http\Resources\ComplaintResource;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Requests\StoreReportRequest;
-use App\Http\Requests\UpdateReportRequest;
+use App\Http\Requests\StoreComplaintRequest;
+use App\Http\Requests\UpdateComplaintRequest;
 
-class ReportController extends Controller
+class ComplaintController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return ReportResource::collection(Report::all());
+        return ComplaintResource::collection(Complaint::all());
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreReportRequest $request)
+    public function store(StoreComplaintRequest $request)
     {
         $data = $request->validated();
 
@@ -32,13 +32,13 @@ class ReportController extends Controller
             $data['evidence_path'] = $path;
         }
 
-        $report = Report::create(array_merge(
+        $complaint = Complaint::create(array_merge(
             $data,
             ['status' => 'pending']
         ));
 
-        return ReportResource::make($report)
-            ->additional(['message' => 'Report created successfully'])
+        return ComplaintResource::make($complaint)
+            ->additional(['message' => 'Complaint created successfully'])
             ->response()
             ->setStatusCode(201);
     }
@@ -46,39 +46,39 @@ class ReportController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Report $report)
+    public function show(Complaint $complaint)
     {
-        return ReportResource::make($report);
+        return ComplaintResource::make($complaint);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateReportRequest $request, Report $report)
+    public function update(UpdateComplaintRequest $request, Complaint $complaint)
     {
         $data = $request->validated();
 
         // Handle file upload if present
         if ($request->hasFile('evidence')) {
             // Delete old file if exists
-            if ($report->evidence_path && Storage::disk('public')->exists($report->evidence_path)) {
-                Storage::disk('public')->delete($report->evidence_path);
+            if ($complaint->evidence_path && Storage::disk('public')->exists($complaint->evidence_path)) {
+                Storage::disk('public')->delete($complaint->evidence_path);
             }
 
             $path = $request->file('evidence')->store('evidence', 'public');
             $data['evidence_path'] = $path;
         }
 
-        $report->update($data);
+        $complaint->update($data);
 
-        return ReportResource::make($report)
-            ->additional(['message' => 'Report updated successfully']);
+        return ComplaintResource::make($complaint)
+            ->additional(['message' => 'Complaint updated successfully']);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Report $report)
+    public function destroy(Complaint $complaint)
     {
         //
     }

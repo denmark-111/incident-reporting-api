@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\V1\ReportController;
+use App\Http\Controllers\Api\V1\ComplaintController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -10,7 +10,7 @@ Route::get('/user', function (Request $request) {
 
 Route::prefix('v1')->group(function () {
 
-    //Reports
-    Route::apiResource('reports', ReportController::class)->only(['index', 'show', 'store', 'update']);
+    //Complaints
+    Route::apiResource('complaints', ComplaintController::class)->only(['index', 'show', 'store', 'update']);
 
 });
