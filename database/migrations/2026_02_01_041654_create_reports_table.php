@@ -13,12 +13,20 @@ return new class extends Migration
     {
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('category')->nullable();
+            $table->date('incident_date');
+            $table->time('incident_time');
+            $table->text('location');
+            $table->string('type');
+            $table->string('severity');
             $table->text('description');
-            $table->text('location')->nullable();
+            $table->string('complainant_name');
+            $table->string('complainant_contact');
+            $table->string('respondent_name');
+            $table->string('respondent_address')->nullable();
+            $table->string('witness')->nullable();
+            $table->string('desired_resolution')->nullable();
             $table->string('evidence_path')->nullable();
-            $table->string('status')->default('pending');
+            $table->string('additional_notes')->nullable();
             $table->timestamps();
         });
     }

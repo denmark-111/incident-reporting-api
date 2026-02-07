@@ -22,11 +22,20 @@ class StoreReportRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title'       => 'required|string|max:255',
-            'category'    => 'nullable|string|max:100',
+            'incident_date' => 'required|date',
+            'incident_time' => 'required|date_format:H:i',
+            'location' => 'required|string',
+            'type' => 'required|string',
+            'severity' => 'required|string',
             'description' => 'required|string',
-            'location'    => 'nullable|string|max:255',
-            'evidence'    => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120', // 5MB max
+            'complainant_name' => 'required|string',
+            'complainant_contact' => 'required|string',
+            'respondent_name' => 'required|string',
+            'respondent_address' => 'nullable|string',
+            'witness' => 'nullable|string',
+            'desired_resolution' => 'nullable|string',
+            'evidence' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120', // 5MB max
+            'additional_notes' => 'nullable|string',
         ];
     }
 }

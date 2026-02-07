@@ -22,11 +22,20 @@ class UpdateReportRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title'       => 'sometimes|required|string|max:255',
-            'category'    => 'sometimes|nullable|string|max:100',
-            'description' => 'sometimes|required|string',
-            'location'    => 'sometimes|nullable|string|max:255',
-            'evidence'    => 'sometimes|nullable|file|mimes:jpg,jpeg,png,pdf|max:5120', // 5MB max
+            'incident_date' => 'sometimes|date',
+            'incident_time' => 'sometimes|date_format:H:i',
+            'location' => 'sometimes|string',
+            'type' => 'sometimes|string',
+            'severity' => 'sometimes|string',
+            'description' => 'sometimes|string',
+            'complainant_name' => 'sometimes|string',
+            'complainant_contact' => 'sometimes|string',
+            'respondent_name' => 'sometimes|string',
+            'respondent_address' => 'nullable|string',
+            'witness' => 'nullable|string',
+            'desired_resolution' => 'nullable|string',
+            'evidence' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120', // 5MB max
+            'additional_notes' => 'nullable|string',
         ];
     }
 }

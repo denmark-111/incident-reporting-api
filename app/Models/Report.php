@@ -11,11 +11,19 @@ class Report extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title',
-        'category',
-        'description',
+        'incident_date',
+        'incident_time',
         'location',
+        'type',
+        'severity',
+        'description',
+        'complainant_name',
+        'complainant_contact',
+        'respondent_name',
+        'respondent_address',
+        'witness',
+        'desired_resolution',
         'evidence_path',
-        'status',
+        'additional_notes',
     ];
 }
