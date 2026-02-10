@@ -16,7 +16,13 @@ class ComplaintController extends Controller
      */
     public function index()
     {
-        return ComplaintResource::collection(Complaint::all());
+        $user = auth()->user();
+
+        $complaints = $user->isAdmin()
+            ? Complaint::all()
+            : $user->complaints()->get();
+
+        return ComplaintResource::collection($complaints);
     }
 
     /**
