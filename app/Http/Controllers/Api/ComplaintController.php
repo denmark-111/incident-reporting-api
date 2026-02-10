@@ -54,6 +54,8 @@ class ComplaintController extends Controller
      */
     public function show(Complaint $complaint)
     {
+        $this->authorizeComplaint($complaint);
+
         return ComplaintResource::make($complaint);
     }
 
@@ -62,6 +64,8 @@ class ComplaintController extends Controller
      */
     public function update(UpdateComplaintRequest $request, Complaint $complaint)
     {
+        $this->authorizeComplaint($complaint);
+        
         $data = $request->validated();
 
         // Handle file upload if present
@@ -87,5 +91,18 @@ class ComplaintController extends Controller
     public function destroy(Complaint $complaint)
     {
         //
+    }
+
+    private function authorizeComplaint(Complaint $complaint)
+    {
+        $user = auth()->user();
+
+        if ($user->isAdmin()) {
+            return;
+        }
+
+        if ($complaint->user_id !== $user->id) {
+            abort(403, 'Unauthorized');
+        }
     }
 }
