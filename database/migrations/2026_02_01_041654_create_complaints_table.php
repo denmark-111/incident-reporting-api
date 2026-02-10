@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('evidence_path')->nullable();
             $table->string('additional_notes')->nullable();
             $table->timestamps();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
         });
     }
 

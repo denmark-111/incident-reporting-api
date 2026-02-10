@@ -32,7 +32,7 @@ class ComplaintController extends Controller
             $data['evidence_path'] = $path;
         }
 
-        $complaint = Complaint::create(array_merge(
+        $complaint = $request->user()->complaints()->create(array_merge(
             $data,
             ['status' => 'pending']
         ));

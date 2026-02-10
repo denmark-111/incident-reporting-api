@@ -25,5 +25,11 @@ class Complaint extends Model
         'desired_resolution',
         'evidence_path',
         'additional_notes',
+        'user_id',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
