@@ -17,6 +17,8 @@ return new class extends Migration
             $table->text('description');
             $table->string('evidence_path')->nullable();
             $table->text('location');
+            $table->decimal('latitude', 10, 7);
+            $table->decimal('longitude', 10, 7);
             $table->string('additional_notes')->nullable();
             $table->timestamps();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();

@@ -20,6 +20,8 @@ class IncidentResource extends JsonResource
             'description' => $this->description,
             'evidence' => $this->evidence_path ? asset('storage/' . $this->evidence_path) : null,
             'location' => $this->location,
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude,
             'additional_notes' => $this->additional_notes,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

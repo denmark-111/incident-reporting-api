@@ -15,6 +15,8 @@ class Incident extends Model
         'description',
         'evidence_path',
         'location',
+        'latitude',
+        'longitude',
         'additional_notes',
         'user_id',
     ];

@@ -21,11 +21,18 @@ class StoreIncidentRequest extends FormRequest
      */
     public function rules(): array
     {
+        $minLat = 14.70456;
+        $maxLat = 14.71910;
+        $minLong = 121.03043;
+        $maxLong = 121.05052;
+        
         return [
             'type' => 'required|string|max:255',
             'description' => 'required|string',
             'evidence' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120', // 5MB max
             'location' => 'required|string',
+            'latitude' => "required|numeric|between:$minLat,$maxLat",
+            'longitude' => "required|numeric|between:$minLong,$maxLong",
             'additional_notes' => 'nullable|string',
         ];
     }
