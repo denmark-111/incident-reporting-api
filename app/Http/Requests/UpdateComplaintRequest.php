@@ -22,20 +22,20 @@ class UpdateComplaintRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'incident_date' => 'sometimes|date',
-            'incident_time' => 'sometimes|date_format:H:i',
-            'location' => 'sometimes|string',
-            'type' => 'sometimes|string',
-            'severity' => 'sometimes|string',
-            'description' => 'sometimes|string',
-            'complainant_name' => 'sometimes|string',
-            'complainant_contact' => 'sometimes|string',
-            'respondent_name' => 'sometimes|string',
-            'respondent_address' => 'nullable|string',
-            'witness' => 'nullable|string',
-            'desired_resolution' => 'nullable|string',
-            'evidence' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120', // 5MB max
-            'additional_notes' => 'nullable|string',
+            'incident_date' => 'sometimes|required|date',
+            'incident_time' => 'sometimes|required|date_format:H:i',
+            'location' => 'sometimes|required|string',
+            'type' => 'sometimes|required|string',
+            'severity' => 'sometimes|required|string',
+            'description' => 'sometimes|required|string',
+            'complainant_name' => 'sometimes|required|string',
+            'complainant_contact' => 'sometimes|required|string',
+            'respondent_name' => 'sometimes|required|string',
+            'respondent_address' => 'sometimes|nullable|string',
+            'witness' => 'sometimes|nullable|string',
+            'desired_resolution' => 'sometimes|nullable|string',
+            'evidence' => 'sometimes|nullable|file|mimes:jpg,jpeg,png,pdf|max:5120', // 5MB max
+            'additional_notes' => 'sometimes|nullable|string',
         ];
     }
 }
