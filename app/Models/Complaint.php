@@ -26,6 +26,7 @@ class Complaint extends Model
         'evidence_path',
         'additional_notes',
         'user_id',
+        'status',
     ];
 
     public function user()

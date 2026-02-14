@@ -21,7 +21,7 @@ class UpdateComplaintRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'incident_date' => 'sometimes|required|date',
             'incident_time' => 'sometimes|required|date_format:H:i',
             'location' => 'sometimes|required|string',
@@ -37,5 +37,11 @@ class UpdateComplaintRequest extends FormRequest
             'evidence' => 'sometimes|nullable|file|mimes:jpg,jpeg,png,pdf|max:5120', // 5MB max
             'additional_notes' => 'sometimes|nullable|string',
         ];
+
+        if ($this->user()->isAdmin()) {
+            $rules['status'] = 'sometimes|required|string|in:pending,dispatched,on-site,resolved,rejected';
+        }
+
+        return $rules;
     }
 }
