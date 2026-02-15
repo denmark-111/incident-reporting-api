@@ -27,7 +27,16 @@ class ComplaintResource extends JsonResource
             'complainant_contact' => $this->complainant_contact,
             'respondent_name' => $this->respondent_name,
             'respondent_address' => $this->respondent_address,
-            'witness' => $this->witness,
+
+            'witnesses' => $this->whenLoaded('witnesses', function () {
+                return $this->witnesses->map(function ($witness) {
+                    return [
+                        'name' => $witness->name,
+                        'contact' => $witness->contact,
+                    ];
+                });
+            }),
+            
             'desired_resolution' => $this->desired_resolution,
             'evidence' => $this->evidence_path ? asset('storage/' . $this->evidence_path) : null,
             'additional_notes' => $this->additional_notes,

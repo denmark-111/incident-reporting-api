@@ -21,7 +21,6 @@ class Complaint extends Model
         'complainant_contact',
         'respondent_name',
         'respondent_address',
-        'witness',
         'desired_resolution',
         'evidence_path',
         'additional_notes',
@@ -32,5 +31,10 @@ class Complaint extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function witnesses()
+    {
+        return $this->hasMany(Witness::class);
     }
 }

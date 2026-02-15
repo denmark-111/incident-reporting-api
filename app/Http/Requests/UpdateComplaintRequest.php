@@ -32,10 +32,12 @@ class UpdateComplaintRequest extends FormRequest
             'complainant_contact' => 'sometimes|required|string',
             'respondent_name' => 'sometimes|required|string',
             'respondent_address' => 'sometimes|nullable|string',
-            'witness' => 'sometimes|nullable|string',
             'desired_resolution' => 'sometimes|nullable|string',
             'evidence' => 'sometimes|nullable|file|mimes:jpg,jpeg,png,pdf|max:5120', // 5MB max
             'additional_notes' => 'sometimes|nullable|string',
+            'witnesses' => 'sometimes|nullable|array',
+            'witnesses.*.name' => 'required|string',
+            'witnesses.*.contact' => 'nullable|string',
         ];
 
         if ($this->user()->isAdmin()) {

@@ -19,8 +19,8 @@ class ComplaintController extends Controller
         $user = auth()->user();
 
         $complaints = $user->isAdmin()
-            ? Complaint::all()
-            : $user->complaints()->get();
+            ? Complaint::with('witnesses')->get()
+            : $user->complaints()->with('witnesses')->get();
 
         return ComplaintResource::collection($complaints);
     }
@@ -32,18 +32,26 @@ class ComplaintController extends Controller
     {
         $data = $request->validated();
 
+        // Extract and remove witnesses data from the main data array, will be handled separately
+        $witnesses = $data['witnesses'] ?? [];
+        unset($data['witnesses']); //
+
         // Handle file upload if present
         if ($request->hasFile('evidence')) {
             $path = $request->file('evidence')->store('evidence', 'public');
             $data['evidence_path'] = $path;
         }
 
-        $complaint = $request->user()->complaints()->create(array_merge(
-            $data,
-            ['status' => 'pending']
-        ));
+        $complaint = $request->user()->complaints()->create([
+            ...$data,
+            'status' => 'pending'
+        ]);
 
-        return ComplaintResource::make($complaint)
+        if (!empty($witnesses)) {
+            $complaint->witnesses()->createMany($witnesses);
+        }
+
+        return ComplaintResource::make($complaint->load('witnesses'))
             ->additional(['message' => 'Complaint created successfully'])
             ->response()
             ->setStatusCode(201);
@@ -56,7 +64,7 @@ class ComplaintController extends Controller
     {
         $this->authorizeComplaint($complaint);
 
-        return ComplaintResource::make($complaint);
+        return ComplaintResource::make($complaint->load('witnesses'));
     }
 
     /**
@@ -67,6 +75,10 @@ class ComplaintController extends Controller
         $this->authorizeComplaint($complaint);
         
         $data = $request->validated();
+
+        // Extract and remove witnesses data from the main data array, will be handled separately
+        $witnesses = $data['witnesses'] ?? [];
+        unset($data['witnesses']);
 
         // Handle file upload if present
         if ($request->hasFile('evidence')) {
@@ -81,7 +93,12 @@ class ComplaintController extends Controller
 
         $complaint->update($data);
 
-        return ComplaintResource::make($complaint)
+        if (!empty($witnesses)) {
+            $complaint->witnesses()->delete();
+            $complaint->witnesses()->createMany($witnesses);
+        }
+
+        return ComplaintResource::make($complaint->load('witnesses'))
             ->additional(['message' => 'Complaint updated successfully']);
     }
 

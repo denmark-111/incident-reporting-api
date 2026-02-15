@@ -32,10 +32,12 @@ class StoreComplaintRequest extends FormRequest
             'complainant_contact' => 'required|string',
             'respondent_name' => 'required|string',
             'respondent_address' => 'nullable|string',
-            'witness' => 'nullable|string',
             'desired_resolution' => 'nullable|string',
             'evidence' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120', // 5MB max
             'additional_notes' => 'nullable|string',
+            'witnesses' => 'nullable|array',
+            'witnesses.*.name' => 'required|string',
+            'witnesses.*.contact' => 'nullable|string',
         ];
     }
 }
