@@ -77,7 +77,7 @@ class ComplaintController extends Controller
         $data = $request->validated();
 
         // Extract and remove witnesses data from the main data array, will be handled separately
-        $witnesses = $data['witnesses'] ?? [];
+        $witnesses = $data['witnesses'] ?? null;
         unset($data['witnesses']);
 
         // Handle file upload if present
@@ -93,9 +93,12 @@ class ComplaintController extends Controller
 
         $complaint->update($data);
 
-        if (!empty($witnesses)) {
+        // Update witnesses: delete all if present in request (even empty) and add new if provided
+        if ($request->has('witnesses')) {
             $complaint->witnesses()->delete();
-            $complaint->witnesses()->createMany($witnesses);
+            if (!empty($witnesses)) {
+                $complaint->witnesses()->createMany($witnesses);
+            }
         }
 
         return ComplaintResource::make($complaint->load('witnesses'))

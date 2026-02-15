@@ -23,7 +23,6 @@ return new class extends Migration
             $table->string('complainant_contact');
             $table->string('respondent_name');
             $table->string('respondent_address')->nullable();
-            $table->string('witness')->nullable();
             $table->string('desired_resolution')->nullable();
             $table->string('evidence_path')->nullable();
             $table->string('additional_notes')->nullable();
