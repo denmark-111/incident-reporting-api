@@ -19,6 +19,7 @@ class Incident extends Model
         'longitude',
         'additional_notes',
         'user_id',
+        'status',
     ];
 
     public function user()

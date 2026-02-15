@@ -26,7 +26,7 @@ class UpdateIncidentRequest extends FormRequest
         $minLong = 121.03043;
         $maxLong = 121.05052;
 
-        return [
+        $rules = [
             'type' => 'sometimes|required|string',
             'description' => 'sometimes|required|string',
             'evidence' => 'sometimes|nullable|file|mimes:jpg,jpeg,png,pdf|max:5120', // 5MB max
@@ -35,5 +35,11 @@ class UpdateIncidentRequest extends FormRequest
             'longitude' => "sometimes|required|numeric|between:$minLong,$maxLong",
             'additional_notes' => 'sometimes|nullable|string',
         ];
+
+        if ($this->user()->isAdmin()) {
+            $rules['status'] = 'sometimes|required|string|in:pending,dispatched,on-site,resolved,rejected';
+        }
+
+        return $rules;
     }
 }

@@ -16,6 +16,7 @@ class IncidentResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'status' => $this->status,
             'type' => $this->type,
             'description' => $this->description,
             'evidence' => $this->evidence_path ? asset('storage/' . $this->evidence_path) : null,
