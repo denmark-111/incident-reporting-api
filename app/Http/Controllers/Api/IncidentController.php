@@ -7,6 +7,7 @@ use App\Http\Requests\StoreIncidentRequest;
 use App\Http\Requests\UpdateIncidentRequest;
 use App\Http\Resources\IncidentResource;
 use App\Models\Incident;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class IncidentController extends Controller
@@ -14,15 +15,47 @@ class IncidentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $request->validate([
+            'status'        => ['sometimes', 'string'],
+            'type'          => ['sometimes', 'string'],
+            'start_date'    => ['sometimes', 'date'],
+            'end_date'      => ['sometimes', 'date', 'after_or_equal:start_date'],
+            'per_page'      => ['sometimes', 'integer', 'min:1', 'max:100'],
+        ]);
+
         $user = auth()->user();
 
-        $incidents = $user->isAdmin()
-            ? Incident::all()
-            : $user->incidents()->get();
+        $query = $user->isAdmin()
+            ? Incident::query()
+            : $user->incidents();
 
-        return IncidentResource::collection($incidents);
+        // Filter by status
+        $query->when($request->status, function ($q) use ($request) {
+            $q->where('status', $request->status);
+        });
+
+        // Filter by type
+        $query->when($request->type, function ($q) use ($request) {
+            $q->where('type', $request->type);
+        });
+
+        // Filter by start date
+        $query->when($request->start_date, function ($q) use ($request) {
+            $q->whereDate('created_at', '>=', $request->start_date);
+        });
+
+        // Filter by end date
+        $query->when($request->end_date, function ($q) use ($request) {
+            $q->whereDate('created_at', '<=', $request->end_date);
+        });
+
+        $perPage = $request->per_page ?? 10;
+
+        return IncidentResource::collection(
+            $query->latest()->paginate($perPage)
+        );
     }
 
     /**
@@ -38,7 +71,10 @@ class IncidentController extends Controller
             $data['evidence_path'] = $path;
         }
 
-        $incident = $request->user()->incidents()->create($data);
+        $incident = $request->user()->incidents()->create([
+            ...$data,
+            'status' => 'pending'
+        ]);
 
         return IncidentResource::make($incident)
             ->additional(['message' => 'Incident created successfully'])
