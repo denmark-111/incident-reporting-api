@@ -53,9 +53,13 @@ class IncidentController extends Controller
 
         $perPage = $request->per_page ?? 10;
 
-        return IncidentResource::collection(
-            $query->latest()->paginate($perPage)
-        );
+        // Paginate and preserve query parameters in pagination links
+        $paginated = $query->latest()->paginate($perPage)
+            ->appends($request->only([
+                'status', 'type', 'start_date', 'end_date',  'per_page'
+            ]));
+
+        return IncidentResource::collection($paginated);
     }
 
     /**

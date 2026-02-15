@@ -59,9 +59,12 @@ class ComplaintController extends Controller
 
         $perPage = $request->per_page ?? 10;
 
-        return ComplaintResource::collection(
-            $query->latest()->paginate($perPage)
-        );
+        $paginated = $query->latest()->paginate($perPage)
+            ->appends($request->only([
+                'status', 'severity', 'type', 'start_date', 'end_date', 'per_page'
+            ]));
+        
+        return ComplaintResource::collection($paginated);
     }
 
     /**
