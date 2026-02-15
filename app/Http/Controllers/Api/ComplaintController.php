@@ -2,27 +2,66 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Complaint;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ComplaintResource;
-use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\StoreComplaintRequest;
 use App\Http\Requests\UpdateComplaintRequest;
+use App\Http\Resources\ComplaintResource;
+use App\Models\Complaint;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ComplaintController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $request->validate([
+            'status'        => ['sometimes', 'string'],
+            'severity'      => ['sometimes', 'string'],
+            'type'          => ['sometimes', 'string'],
+            'start_date'    => ['sometimes', 'date'],
+            'end_date'      => ['sometimes', 'date', 'after_or_equal:start_date'],
+            'per_page'      => ['sometimes', 'integer', 'min:1', 'max:100'],
+        ]);
+
         $user = auth()->user();
 
-        $complaints = $user->isAdmin()
-            ? Complaint::with('witnesses')->get()
-            : $user->complaints()->with('witnesses')->get();
+        $query = $user->isAdmin()
+            ? Complaint::with('witnesses')
+            : $user->complaints()->with('witnesses');
 
-        return ComplaintResource::collection($complaints);
+        // Filter by status
+        $query->when($request->status, function ($q) use ($request) {
+            $q->where('status', $request->status);
+        });
+
+        // Filter by severity
+        $query->when($request->severity, function ($q) use ($request) {
+            $q->where('severity', $request->severity);
+        });
+
+        // Filter by type
+        $query->when($request->type, function ($q) use ($request) {
+            $q->where('type', $request->type);
+        });
+
+        // Filter by start date
+        $query->when($request->start_date, function ($q) use ($request) {
+            $q->whereDate('incident_date', '>=', $request->start_date);
+        });
+
+        // Filter by end date
+        $query->when($request->end_date, function ($q) use ($request) {
+            $q->whereDate('incident_date', '<=', $request->end_date);
+        });
+
+        $perPage = $request->per_page ?? 10;
+
+        return ComplaintResource::collection(
+            $query->latest()->paginate($perPage)
+        );
     }
 
     /**
