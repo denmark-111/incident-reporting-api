@@ -34,6 +34,22 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
         ]);
 
-        IncidentType::factory(10)->create();
+        
+        $defaultIncidentTypes = [
+            'Waste Management ',
+            'Flooding',
+            'Pollution',
+            'Traffic ',
+            'Infrastructure',
+            'Water Supply',
+            'Public Safety',
+        ];
+
+        foreach ($defaultIncidentTypes as $type) {
+            IncidentType::firstOrCreate(
+                ['name' => $type],
+                ['is_custom' => false]
+            );
+        }
     }
 }
