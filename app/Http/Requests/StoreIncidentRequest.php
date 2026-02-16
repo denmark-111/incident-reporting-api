@@ -34,11 +34,30 @@ class StoreIncidentRequest extends FormRequest
             'longitude' => "required|numeric|between:$minLong,$maxLong",
             'additional_notes' => 'nullable|string',
 
-            'types' => ['required', 'array', 'min:1'],
+            'types' => ['sometimes', 'array', 'min:1'],
             'types.*' => ['integer', 'exists:incident_types,id'],
 
             'custom_types' => ['sometimes', 'array'],
             'custom_types.*' => ['string', 'max:100'],
         ];
+    }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+
+            $types = $this->input('types', []);
+            $custom = $this->input('custom_types', []);
+
+            $hasDefault = is_array($types) && count($types) > 0;
+            $hasCustom = is_array($custom) && count($custom) > 0;
+
+            if (! $hasDefault && ! $hasCustom) {
+                $validator->errors()->add(
+                    'types',
+                    'At least one incident type (default or custom) is required.'
+                );
+            }
+        });
     }
 }

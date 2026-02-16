@@ -47,4 +47,30 @@ class UpdateIncidentRequest extends FormRequest
 
         return $rules;
     }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+
+            $typesPresent = $this->has('types');
+            $customPresent = $this->has('custom_types');
+
+            // Only enforce if updating types
+            if ($typesPresent || $customPresent) {
+
+                $types = $this->input('types', []);
+                $custom = $this->input('custom_types', []);
+
+                $hasDefault = is_array($types) && count($types) > 0;
+                $hasCustom = is_array($custom) && count($custom) > 0;
+
+                if (! $hasDefault && ! $hasCustom) {
+                    $validator->errors()->add(
+                        'types',
+                        'At least one incident type must be provided when updating types.'
+                    );
+                }
+            }
+        });
+    }
 }

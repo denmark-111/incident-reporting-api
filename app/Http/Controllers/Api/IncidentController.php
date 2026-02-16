@@ -141,7 +141,26 @@ class IncidentController extends Controller
 
         $incident->update($data);
 
-        return IncidentResource::make($incident)
+        // If types present in request → sync
+        if ($request->has('types') || $request->has('custom_types')) {
+
+            $typeIds = $data['types'] ?? [];
+
+            if (!empty($data['custom_types'])) {
+                foreach ($data['custom_types'] as $customName) {
+                    $type = IncidentType::firstOrCreate(
+                        ['name' => $customName],
+                        ['is_custom' => true]
+                    );
+
+                    $typeIds[] = $type->id;
+                }
+            }
+
+            $incident->types()->sync($typeIds);
+        }
+
+        return IncidentResource::make($incident->load('types'))
             ->additional(['message' => 'Incident updated successfully']);
     }
 
