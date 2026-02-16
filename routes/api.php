@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ComplaintController;
 use App\Http\Controllers\Api\IncidentController;
+use App\Http\Controllers\Api\IncidentTypeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,4 +19,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('complaints', ComplaintController::class)->only(['index', 'show', 'store', 'update']);
     //Incidents
     Route::apiResource('incidents', IncidentController::class)->only(['index', 'show', 'store', 'update']);
+    //Incident Types
+    Route::get('/incident-types', [IncidentTypeController::class, 'index']);
 });

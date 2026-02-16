@@ -27,13 +27,18 @@ class UpdateIncidentRequest extends FormRequest
         $maxLong = 121.05052;
 
         $rules = [
-            'type' => 'sometimes|required|string',
             'description' => 'sometimes|required|string',
             'evidence' => 'sometimes|nullable|file|mimes:jpg,jpeg,png,pdf|max:5120', // 5MB max
             'location' => 'sometimes|required|string',
             'latitude' => "sometimes|required|numeric|between:$minLat,$maxLat",
             'longitude' => "sometimes|required|numeric|between:$minLong,$maxLong",
             'additional_notes' => 'sometimes|nullable|string',
+
+            'types' => ['sometimes', 'array', 'min:1'],
+            'types.*' => ['integer', 'exists:incident_types,id'],
+
+            'custom_types' => ['sometimes', 'array'],
+            'custom_types.*' => ['string', 'max:100'],
         ];
 
         if ($this->user()->isAdmin()) {

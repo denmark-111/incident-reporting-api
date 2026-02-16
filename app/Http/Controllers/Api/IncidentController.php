@@ -7,6 +7,7 @@ use App\Http\Requests\StoreIncidentRequest;
 use App\Http\Requests\UpdateIncidentRequest;
 use App\Http\Resources\IncidentResource;
 use App\Models\Incident;
+use App\Models\IncidentType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -28,8 +29,8 @@ class IncidentController extends Controller
         $user = auth()->user();
 
         $query = $user->isAdmin()
-            ? Incident::query()
-            : $user->incidents();
+            ? Incident::with('types')
+            : $user->incidents()->with('types');
 
         // Filter by status
         $query->when($request->status, function ($q) use ($request) {
@@ -38,7 +39,9 @@ class IncidentController extends Controller
 
         // Filter by type
         $query->when($request->type, function ($q) use ($request) {
-            $q->where('type', $request->type);
+            $q->whereHas('types', function ($sub) use ($request) {
+                $sub->where('name', $request->type);
+            });
         });
 
         // Filter by start date
@@ -76,11 +79,31 @@ class IncidentController extends Controller
         }
 
         $incident = $request->user()->incidents()->create([
-            ...$data,
+            'description' => $data['description'],
+            'location' => $data['location'],
+            'latitude' => $data['latitude'],
+            'longitude' => $data['longitude'],
+            'additional_notes' => $data['additional_notes'] ?? null,
+            'evidence_path' => $data['evidence_path'] ?? null,
             'status' => 'pending'
         ]);
 
-        return IncidentResource::make($incident)
+        // Attach selected default types (type_id)
+        $incident->types()->attach($data['types'] ?? []);
+
+        // Handle custom types
+        if (!empty($data['custom_types'])) {
+            foreach ($data['custom_types'] as $customName) {
+                $type = IncidentType::firstOrCreate(
+                    ['name' => $customName],
+                    ['is_custom' => true]
+                );
+
+                $incident->types()->attach($type->id);
+            }
+        }
+
+        return IncidentResource::make($incident->load('types'))
             ->additional(['message' => 'Incident created successfully'])
             ->response()
             ->setStatusCode(201);
@@ -93,7 +116,7 @@ class IncidentController extends Controller
     {
         $this->authorizeIncident($incident);
 
-        return IncidentResource::make($incident);
+        return IncidentResource::make($incident->load('types'));
     }
 
     /**

@@ -27,13 +27,18 @@ class StoreIncidentRequest extends FormRequest
         $maxLong = 121.05052;
         
         return [
-            'type' => 'required|string|max:255',
             'description' => 'required|string',
             'evidence' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120', // 5MB max
             'location' => 'required|string',
             'latitude' => "required|numeric|between:$minLat,$maxLat",
             'longitude' => "required|numeric|between:$minLong,$maxLong",
             'additional_notes' => 'nullable|string',
+
+            'types' => ['required', 'array', 'min:1'],
+            'types.*' => ['integer', 'exists:incident_types,id'],
+
+            'custom_types' => ['sometimes', 'array'],
+            'custom_types.*' => ['string', 'max:100'],
         ];
     }
 }

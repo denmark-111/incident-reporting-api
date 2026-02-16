@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\IncidentType;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -32,5 +33,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@gmail.com',
             'role' => 'admin',
         ]);
+
+        IncidentType::factory(10)->create();
     }
 }

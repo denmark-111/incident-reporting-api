@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('incidents', function (Blueprint $table) {
             $table->id();
-            $table->string('type');
             $table->text('description');
             $table->string('evidence_path')->nullable();
             $table->text('location');

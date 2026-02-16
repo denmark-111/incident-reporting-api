@@ -11,7 +11,6 @@ class Incident extends Model
     use HasFactory;
 
     protected $fillable = [
-        'type',
         'description',
         'evidence_path',
         'location',
@@ -25,5 +24,10 @@ class Incident extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function types()
+    {
+        return $this->belongsToMany(IncidentType::class, 'incident_incident_type');
     }
 }
