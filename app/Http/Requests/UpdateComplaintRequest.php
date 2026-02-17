@@ -21,10 +21,17 @@ class UpdateComplaintRequest extends FormRequest
      */
     public function rules(): array
     {
+        $minLat = 14.70456;
+        $maxLat = 14.71910;
+        $minLong = 121.03043;
+        $maxLong = 121.05052;
+
         $rules = [
             'incident_date' => 'sometimes|required|date',
             'incident_time' => 'sometimes|required|date_format:H:i',
             'location' => 'sometimes|required|string',
+            'latitude' => "sometimes|required|numeric|between:$minLat,$maxLat",
+            'longitude' => "sometimes|required|numeric|between:$minLong,$maxLong",
             'type' => 'sometimes|required|string',
             'severity' => 'sometimes|required|string',
             'description' => 'sometimes|required|string',

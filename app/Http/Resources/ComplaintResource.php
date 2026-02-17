@@ -20,6 +20,8 @@ class ComplaintResource extends JsonResource
             'incident_date' => $this->incident_date,
             'incident_time' => $this->incident_time,
             'location' => $this->location,
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude,
             'type' => $this->type,
             'severity' => $this->severity,
             'description' => $this->description,

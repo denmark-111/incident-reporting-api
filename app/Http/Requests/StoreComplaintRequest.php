@@ -21,10 +21,17 @@ class StoreComplaintRequest extends FormRequest
      */
     public function rules(): array
     {
+        $minLat = 14.70456;
+        $maxLat = 14.71910;
+        $minLong = 121.03043;
+        $maxLong = 121.05052;
+        
         return [
             'incident_date' => 'required|date',
             'incident_time' => 'required|date_format:H:i',
             'location' => 'required|string',
+            'latitude' => "required|numeric|between:$minLat,$maxLat",
+            'longitude' => "required|numeric|between:$minLong,$maxLong",
             'type' => 'required|string',
             'severity' => 'required|string',
             'description' => 'required|string',

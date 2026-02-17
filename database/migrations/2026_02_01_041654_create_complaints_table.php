@@ -16,6 +16,8 @@ return new class extends Migration
             $table->date('incident_date');
             $table->time('incident_time');
             $table->text('location');
+            $table->decimal('latitude', 10, 7);
+            $table->decimal('longitude', 10, 7);
             $table->string('type');
             $table->string('severity');
             $table->text('description');

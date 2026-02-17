@@ -14,6 +14,8 @@ class Complaint extends Model
         'incident_date',
         'incident_time',
         'location',
+        'latitude',
+        'longitude',
         'type',
         'severity',
         'description',
