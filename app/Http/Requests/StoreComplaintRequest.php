@@ -40,7 +40,7 @@ class StoreComplaintRequest extends FormRequest
             'respondent_name' => 'required|string',
             'respondent_address' => 'nullable|string',
             'desired_resolution' => 'nullable|string',
-            'evidence' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120', // 5MB max
+            'evidence' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:102400', // 100MB max
             'additional_notes' => 'nullable|string',
             'witnesses' => 'nullable|array',
             'witnesses.*.name' => 'required|string',

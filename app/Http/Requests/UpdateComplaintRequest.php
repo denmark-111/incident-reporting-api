@@ -40,7 +40,7 @@ class UpdateComplaintRequest extends FormRequest
             'respondent_name' => 'sometimes|required|string',
             'respondent_address' => 'sometimes|nullable|string',
             'desired_resolution' => 'sometimes|nullable|string',
-            'evidence' => 'sometimes|nullable|file|mimes:jpg,jpeg,png,pdf|max:5120', // 5MB max
+            'evidence' => 'sometimes|nullable|file|mimes:jpg,jpeg,png,pdf|max:102400', // 100MB max
             'additional_notes' => 'sometimes|nullable|string',
             'witnesses' => 'sometimes|nullable|array',
             'witnesses.*.name' => 'required|string',

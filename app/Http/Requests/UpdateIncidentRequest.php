@@ -28,7 +28,7 @@ class UpdateIncidentRequest extends FormRequest
 
         $rules = [
             'description' => 'sometimes|required|string',
-            'evidence' => 'sometimes|nullable|file|mimes:jpg,jpeg,png,pdf|max:5120', // 5MB max
+            'evidence' => 'sometimes|nullable|file|mimes:jpg,jpeg,png,pdf|max:102400', // 100MB max
             'location' => 'sometimes|required|string',
             'latitude' => "sometimes|required|numeric|between:$minLat,$maxLat",
             'longitude' => "sometimes|required|numeric|between:$minLong,$maxLong",
