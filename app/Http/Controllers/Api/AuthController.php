@@ -2,41 +2,48 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Models\UserToken;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        $credentials = $request->validate([
+        $request->validate([
             'email' => ['required', 'email'],
-            'password' => ['required'],
+            'password' => ['required']
         ]);
 
-        if (!Auth::attempt($credentials)) {
-            return response()->json([
-                'message' => 'Invalid credentials'
-            ], 401);
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json(['message' => 'Invalid credentials'], 401);
         }
 
-        $user = Auth::user();
+        $token = bin2hex(random_bytes(32));
 
-        $token = $user->createToken('api-token')->plainTextToken;
+        UserToken::create([
+            'user_id' => $user->id,
+            'token' => $token,
+            'expires_at' => now()->addDays(7) // Expires in 7 days
+        ]);
 
         return response()->json([
             'token' => $token,
-            'user' => $user,
+            'user' => $user
         ]);
     }
 
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        $token = $request->bearerToken();
 
-        return response()->json([
-            'message' => 'Logged out'
-        ]);
+        UserToken::where('token', $token)->delete();
+
+        return response()->json(['message' => 'Logged out']);
     }
 }

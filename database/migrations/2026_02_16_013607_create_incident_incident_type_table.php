@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('incident_incident_type', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('incident_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('incident_type_id')->constrained()->cascadeOnDelete();
-        });
+        // Schema::create('incident_incident_type', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->foreignId('incident_id')->constrained()->cascadeOnDelete();
+        //     $table->foreignId('incident_type_id')->constrained()->cascadeOnDelete();
+        // });
     }
 
     /**

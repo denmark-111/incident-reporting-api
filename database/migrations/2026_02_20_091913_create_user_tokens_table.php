@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Schema::create('incident_types', function (Blueprint $table) {
+        // Schema::create('user_tokens', function (Blueprint $table) {
         //     $table->id();
-        //     $table->string('name'); // I'll make this unique later
-        //     $table->boolean('is_custom')->default(false);
+        //     $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+        //     $table->string('token', 64)->unique();
+        //     $table->timestamp('expires_at')->nullable();
+        //     $table->timestamps();
         // });
     }
 
@@ -23,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('incident_types');
+        Schema::dropIfExists('user_tokens');
     }
 };

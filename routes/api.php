@@ -7,14 +7,14 @@ use App\Http\Controllers\Api\IncidentTypeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+// Route::get('/user', function (Request $request) {
+//     return $request->user();
+// })->middleware('auth:sanctum');
 
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('custom.auth');
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('custom.auth')->group(function () {
     //Complaints
     Route::apiResource('complaints', ComplaintController::class)->only(['index', 'show', 'store', 'update']);
     //Incidents
