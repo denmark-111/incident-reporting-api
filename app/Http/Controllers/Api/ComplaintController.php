@@ -7,6 +7,8 @@ use App\Http\Requests\StoreComplaintRequest;
 use App\Http\Requests\UpdateComplaintRequest;
 use App\Http\Resources\ComplaintResource;
 use App\Models\Complaint;
+use App\Models\User;
+use App\Services\Notifier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -93,6 +95,20 @@ class ComplaintController extends Controller
             $complaint->witnesses()->createMany($witnesses);
         }
 
+        // Notify all admins
+        $admins = User::where('role', 'admin')->pluck('id')->toArray();
+
+        Notifier::send(
+            $admins,
+            'complaint_created',
+            'A new complaint has been submitted.',
+            [
+                'complaint_id' => $complaint->id,
+                'submitted_by' => $complaint->user->name,
+                'description' => $complaint->description,
+            ]
+        );
+        
         return ComplaintResource::make($complaint->load('witnesses'))
             ->additional(['message' => 'Complaint created successfully'])
             ->response()

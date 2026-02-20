@@ -8,6 +8,8 @@ use App\Http\Requests\UpdateIncidentRequest;
 use App\Http\Resources\IncidentResource;
 use App\Models\Incident;
 use App\Models\IncidentType;
+use App\Models\User;
+use App\Services\Notifier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -102,7 +104,21 @@ class IncidentController extends Controller
                 $incident->types()->attach($type->id);
             }
         }
+        
+        // Notify all admins
+        $admins = User::where('role', 'admin')->pluck('id')->toArray();
 
+        Notifier::send(
+            $admins,
+            'incident_created',
+            'A new incident has been submitted.',
+            [
+                'incident_id' => $incident->id,
+                'submitted_by' => $incident->user->name,
+                'description' => $incident->description,
+            ]
+        );
+        
         return IncidentResource::make($incident->load('types'))
             ->additional(['message' => 'Incident created successfully'])
             ->response()
