@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ComplaintController;
+use App\Http\Controllers\Api\CustomFieldController;
 use App\Http\Controllers\Api\IncidentController;
 use App\Http\Controllers\Api\IncidentTypeController;
 use App\Http\Controllers\Api\NotificationController;
@@ -14,6 +15,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('custom.auth');
+
+
+//Custom Fields
+Route::apiResource('custom-fields', CustomFieldController::class)->only(['index', 'store', 'show', 'update']); //guard later for admin only
 
 Route::middleware('custom.auth')->group(function () {
     //Complaints
