@@ -30,4 +30,9 @@ class Incident extends Model
     {
         return $this->belongsToMany(IncidentType::class, 'incident_incident_type');
     }
+
+    public function customFieldValues()
+    {
+        return $this->hasMany(CustomFieldValue::class);
+    }
 }

@@ -35,6 +35,15 @@ class IncidentResource extends JsonResource
 
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+
+            'custom_fields' => $this->whenLoaded('customFieldValues', function () {
+                return $this->customFieldValues->mapWithKeys(function ($item) {
+                    return [
+                        $item->customField->field_name => $item->value
+                    ];
+                });
+            }),
+            
         ];
     }
 }

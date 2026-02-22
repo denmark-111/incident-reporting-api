@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\CustomField;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreIncidentRequest extends FormRequest
@@ -26,7 +27,7 @@ class StoreIncidentRequest extends FormRequest
         $minLong = 121.03043;
         $maxLong = 121.05052;
         
-        return [
+        $rules = [
             'description' => 'required|string',
             'evidence' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:102400', // 100MB max
             'location' => 'required|string',
@@ -40,6 +41,17 @@ class StoreIncidentRequest extends FormRequest
             'custom_types' => ['sometimes', 'array'],
             'custom_types.*' => ['string', 'max:100'],
         ];
+
+        //Load active custom field rules for incidents
+        $customFields = CustomField::where('field_for', 'incident')
+            ->where('is_active', true)
+            ->get();
+
+        foreach ($customFields as $field) {
+            $rules["custom_fields.{$field->field_name}"] = $field->field_rules ?? 'nullable';
+        }
+
+        return $rules;
     }
 
     public function withValidator($validator)

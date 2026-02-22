@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreIncidentRequest;
 use App\Http\Requests\UpdateIncidentRequest;
 use App\Http\Resources\IncidentResource;
+use App\Models\CustomField;
+use App\Models\CustomFieldValue;
 use App\Models\Incident;
 use App\Models\IncidentType;
 use App\Models\User;
@@ -31,8 +33,8 @@ class IncidentController extends Controller
         $user = auth()->user();
 
         $query = $user->isAdmin()
-            ? Incident::with('types')
-            : $user->incidents()->with('types');
+            ? Incident::with('types', 'customFieldValues.customField')
+            : $user->incidents()->with('types', 'customFieldValues.customField');
 
         // Filter by status
         $query->when($request->status, function ($q) use ($request) {
@@ -118,8 +120,32 @@ class IncidentController extends Controller
                 'description' => $incident->description,
             ]
         );
+
+        // Save custom field values
+        if (!empty($data['custom_fields'])) {
+
+            $customFields = CustomField::where('field_for', 'incident')
+                ->where('is_active', true)
+                ->get()
+                ->keyBy('field_name');
+
+            foreach ($data['custom_fields'] as $fieldName => $value) {
+
+                if (!isset($customFields[$fieldName])) {
+                    continue; // ignore invalid field
+                }
+
+                CustomFieldValue::create([
+                    'custom_field_id' => $customFields[$fieldName]->id,
+                    'incident_id' => $incident->id,
+                    'value' => is_array($value)
+                                ? json_encode($value)
+                                : $value,
+                ]);
+            }
+        }
         
-        return IncidentResource::make($incident->load('types'))
+        return IncidentResource::make($incident->load('types', 'customFieldValues.customField'))
             ->additional(['message' => 'Incident created successfully'])
             ->response()
             ->setStatusCode(201);
@@ -132,7 +158,7 @@ class IncidentController extends Controller
     {
         $this->authorizeIncident($incident);
 
-        return IncidentResource::make($incident->load('types'));
+        return IncidentResource::make($incident->load('types', 'customFieldValues.customField'));
     }
 
     /**
@@ -176,7 +202,7 @@ class IncidentController extends Controller
             $incident->types()->sync($typeIds);
         }
 
-        return IncidentResource::make($incident->load('types'))
+        return IncidentResource::make($incident->load('types', 'customFieldValues.customField'))
             ->additional(['message' => 'Incident updated successfully']);
     }
 
