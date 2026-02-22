@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\CustomField;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateIncidentRequest extends FormRequest
@@ -39,10 +40,22 @@ class UpdateIncidentRequest extends FormRequest
 
             'custom_types' => ['sometimes', 'array'],
             'custom_types.*' => ['string', 'max:100'],
+
+            'custom_fields' => ['sometimes', 'array'],
         ];
 
         if ($this->user()->isAdmin()) {
             $rules['status'] = 'sometimes|required|string|in:pending,dispatched,on-site,resolved,rejected';
+        }
+
+        //Load active custom field rules for incidents
+        $customFields = CustomField::where('field_for', 'incident')
+            ->where('is_active', true)
+            ->get();
+
+        foreach ($customFields as $field) {
+            $rules["custom_fields.{$field->field_name}"] =
+                'sometimes|' . ($field->field_rules ?? 'nullable');
         }
 
         return $rules;

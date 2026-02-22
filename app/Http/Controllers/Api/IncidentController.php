@@ -202,6 +202,36 @@ class IncidentController extends Controller
             $incident->types()->sync($typeIds);
         }
 
+        // Update custom field values
+        if ($request->has('custom_fields')) {
+            
+            $customFields = CustomField::where('field_for', 'incident')
+                ->where('is_active', true)
+                ->get()
+                ->keyBy('field_name');
+
+            foreach ($request->input('custom_fields', []) as $fieldName => $value) {
+
+                if (!isset($customFields[$fieldName])) {
+                    continue;
+                }
+
+                $field = $customFields[$fieldName];
+
+                CustomFieldValue::updateOrCreate(
+                    [
+                        'incident_id' => $incident->id,
+                        'custom_field_id' => $field->id,
+                    ],
+                    [
+                        'value' => is_array($value)
+                            ? json_encode($value)
+                            : $value,
+                    ]
+                );
+            }
+        }
+
         return IncidentResource::make($incident->load('types', 'customFieldValues.customField'))
             ->additional(['message' => 'Incident updated successfully']);
     }
