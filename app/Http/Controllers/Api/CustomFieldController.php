@@ -7,15 +7,35 @@ use App\Http\Requests\StoreCustomFieldRequest;
 use App\Http\Requests\UpdateCustomFieldRequest;
 use App\Http\Resources\CustomFieldResource;
 use App\Models\CustomField;
+use Illuminate\Http\Request;
 
 class CustomFieldController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return CustomFieldResource::collection(CustomField::all());
+        $request->validate([
+            'field_for' => ['sometimes', 'in:incident,complaint'],
+            'is_active' => ['sometimes', 'boolean'],
+        ]);
+
+        $query = CustomField::query();
+
+        // Filter by field_for
+        $query->when($request->field_for, function ($q) use ($request) {
+            $q->where('field_for', $request->field_for);
+        });
+
+        // Filter by is_active
+        $query->when($request->has('is_active'), function ($q) use ($request) {
+            $q->where('is_active', $request->is_active);
+        });
+
+        return CustomFieldResource::collection(
+            $query->get()
+        );
     }
 
     /**
