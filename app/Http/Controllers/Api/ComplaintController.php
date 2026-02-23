@@ -185,7 +185,37 @@ class ComplaintController extends Controller
             }
         }
 
-        return ComplaintResource::make($complaint->load('witnesses'))
+        // Update custom field values
+        if ($request->has('custom_fields')) {
+            
+            $customFields = CustomField::where('field_for', 'complaint')
+                ->where('is_active', true)
+                ->get()
+                ->keyBy('field_name');
+
+            foreach ($request->input('custom_fields', []) as $fieldName => $value) {
+
+                if (!isset($customFields[$fieldName])) {
+                    continue;
+                }
+
+                $field = $customFields[$fieldName];
+
+                CustomFieldValue::updateOrCreate(
+                    [
+                        'complaint_id' => $complaint->id,
+                        'custom_field_id' => $field->id,
+                    ],
+                    [
+                        'value' => is_array($value)
+                            ? json_encode($value)
+                            : $value,
+                    ]
+                );
+            }
+        }
+
+        return ComplaintResource::make($complaint->load('witnesses', 'customFieldValues.customField'))
             ->additional(['message' => 'Complaint updated successfully']);
     }
 
