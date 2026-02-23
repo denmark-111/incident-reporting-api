@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\CustomField;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreComplaintRequest extends FormRequest
@@ -26,7 +27,7 @@ class StoreComplaintRequest extends FormRequest
         $minLong = 121.03043;
         $maxLong = 121.05052;
         
-        return [
+        $rules = [
             'incident_date' => 'required|date',
             'incident_time' => 'required|date_format:H:i',
             'location' => 'required|string',
@@ -46,5 +47,16 @@ class StoreComplaintRequest extends FormRequest
             'witnesses.*.name' => 'required|string',
             'witnesses.*.contact' => 'nullable|string',
         ];
+
+        //Load active custom field rules for complaints
+        $customFields = CustomField::where('field_for', 'complaint')
+            ->where('is_active', true)
+            ->get();
+
+        foreach ($customFields as $field) {
+            $rules["custom_fields.{$field->field_name}"] = $field->field_rules ?? 'nullable';
+        }
+
+        return $rules;
     }
 }

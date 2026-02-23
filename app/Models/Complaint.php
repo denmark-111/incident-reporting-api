@@ -39,4 +39,9 @@ class Complaint extends Model
     {
         return $this->hasMany(Witness::class);
     }
+
+    public function customFieldValues()
+    {
+        return $this->hasMany(CustomFieldValue::class);
+    }
 }

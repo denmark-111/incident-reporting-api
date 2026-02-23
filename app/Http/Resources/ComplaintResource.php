@@ -42,6 +42,15 @@ class ComplaintResource extends JsonResource
             'desired_resolution' => $this->desired_resolution,
             'evidence' => $this->evidence_path ? asset('storage/' . $this->evidence_path) : null,
             'additional_notes' => $this->additional_notes,
+
+            'custom_fields' => $this->whenLoaded('customFieldValues', function () {
+                return $this->customFieldValues->mapWithKeys(function ($item) {
+                    return [
+                        $item->customField->field_name => $item->value
+                    ];
+                });
+            }),
+            
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

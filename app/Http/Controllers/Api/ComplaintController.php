@@ -7,6 +7,8 @@ use App\Http\Requests\StoreComplaintRequest;
 use App\Http\Requests\UpdateComplaintRequest;
 use App\Http\Resources\ComplaintResource;
 use App\Models\Complaint;
+use App\Models\CustomField;
+use App\Models\CustomFieldValue;
 use App\Models\User;
 use App\Services\Notifier;
 use Illuminate\Http\Request;
@@ -31,8 +33,8 @@ class ComplaintController extends Controller
         $user = auth()->user();
 
         $query = $user->isAdmin()
-            ? Complaint::with('witnesses')
-            : $user->complaints()->with('witnesses');
+            ? Complaint::with('witnesses', 'customFieldValues.customField')
+            : $user->complaints()->with('witnesses', 'customFieldValues.customField');
 
         // Filter by status
         $query->when($request->status, function ($q) use ($request) {
@@ -95,6 +97,30 @@ class ComplaintController extends Controller
             $complaint->witnesses()->createMany($witnesses);
         }
 
+        // Save custom field values
+        if (!empty($data['custom_fields'])) {
+
+            $customFields = CustomField::where('field_for', 'complaint')
+                ->where('is_active', true)
+                ->get()
+                ->keyBy('field_name');
+
+            foreach ($data['custom_fields'] as $fieldName => $value) {
+
+                if (!isset($customFields[$fieldName])) {
+                    continue; // ignore invalid field
+                }
+
+                CustomFieldValue::create([
+                    'custom_field_id' => $customFields[$fieldName]->id,
+                    'complaint_id' => $complaint->id,
+                    'value' => is_array($value)
+                                ? json_encode($value)
+                                : $value,
+                ]);
+            }
+        }
+
         // Notify all admins
         $admins = User::where('role', 'admin')->pluck('id')->toArray();
 
@@ -109,7 +135,7 @@ class ComplaintController extends Controller
             ]
         );
         
-        return ComplaintResource::make($complaint->load('witnesses'))
+        return ComplaintResource::make($complaint->load('witnesses', 'customFieldValues.customField'))
             ->additional(['message' => 'Complaint created successfully'])
             ->response()
             ->setStatusCode(201);
@@ -122,7 +148,7 @@ class ComplaintController extends Controller
     {
         $this->authorizeComplaint($complaint);
 
-        return ComplaintResource::make($complaint->load('witnesses'));
+        return ComplaintResource::make($complaint->load('witnesses', 'customFieldValues.customField'));
     }
 
     /**
