@@ -29,7 +29,7 @@ class StoreIncidentRequest extends FormRequest
         
         $rules = [
             'description' => 'required|string',
-            'evidence' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:102400', // 100MB max
+            'evidence' => 'nullable|file|mimes:jpg,jpeg,png,pdf,mp4,mov|max:102400', // 100MB max
             'location' => 'required|string',
             'latitude' => "required|numeric|between:$minLat,$maxLat",
             'longitude' => "required|numeric|between:$minLong,$maxLong",

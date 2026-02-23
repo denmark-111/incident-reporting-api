@@ -17,9 +17,6 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('custom.auth');
 
 
-//Custom Fields
-Route::apiResource('custom-fields', CustomFieldController::class)->only(['index', 'store', 'show', 'update']); //guard later for admin only
-
 Route::middleware('custom.auth')->group(function () {
     //Complaints
     Route::apiResource('complaints', ComplaintController::class)->only(['index', 'show', 'store', 'update']);
@@ -30,4 +27,6 @@ Route::middleware('custom.auth')->group(function () {
     //Notifications
     Route::get('notifications', [NotificationController::class, 'index']);
     Route::patch('notifications', [NotificationController::class, 'update']);
+    //Custom Fields
+    Route::apiResource('custom-fields', CustomFieldController::class)->only(['index', 'store', 'show', 'update']); //guard later for admin only
 });
