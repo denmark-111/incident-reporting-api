@@ -106,20 +106,6 @@ class IncidentController extends Controller
                 $incident->types()->attach($type->id);
             }
         }
-        
-        // Notify all admins
-        $admins = User::where('role', 'admin')->pluck('id')->toArray();
-
-        Notifier::send(
-            $admins,
-            'incident_created',
-            'A new incident has been submitted.',
-            [
-                'incident_id' => $incident->id,
-                'submitted_by' => $incident->user->name,
-                'description' => $incident->description,
-            ]
-        );
 
         // Save custom field values
         if (!empty($data['custom_fields'])) {
@@ -144,6 +130,20 @@ class IncidentController extends Controller
                 ]);
             }
         }
+        
+        // Notify all admins
+        $admins = User::where('role', 'admin')->pluck('id')->toArray();
+
+        Notifier::send(
+            $admins,
+            'incident_created',
+            'A new incident has been submitted.',
+            [
+                'incident_id' => $incident->id,
+                'submitted_by' => $incident->user->name,
+                'description' => $incident->description,
+            ]
+        );
         
         return IncidentResource::make($incident->load('types', 'customFieldValues.customField'))
             ->additional(['message' => 'Incident created successfully'])
