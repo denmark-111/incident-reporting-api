@@ -14,10 +14,10 @@ use Illuminate\Support\Facades\Route;
 // })->middleware('auth:sanctum');
 
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('custom.auth');
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 
-Route::middleware('custom.auth')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
     //Complaints
     Route::apiResource('complaints', ComplaintController::class)->only(['index', 'show', 'store', 'update']);
     //Incidents
