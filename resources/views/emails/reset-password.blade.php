@@ -1,32 +1,122 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Password Reset</title>
 </head>
-<body>
-    <h2>Hello {{ $user->name ?? 'User' }},</h2>
+<body style="margin:0;padding:0;background-color:#f4f6f9;font-family:'Segoe UI',Arial,sans-serif;">
 
-    <p>We received a request to reset your password.</p>
+    <!-- Outer wrapper -->
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f4f6f9;padding:40px 16px;">
+        <tr>
+            <td align="center">
 
-    <p>
-        Click the button below to reset your password:
-    </p>
+                <!-- Email card -->
+                <table width="100%" cellpadding="0" cellspacing="0" border="0"
+                       style="max-width:580px;background-color:#ffffff;border-radius:12px;
+                              box-shadow:0 4px 20px rgba(0,0,0,0.08);overflow:hidden;">
 
-    <p>
-        <a href="{{ $url }}"
-           style="display:inline-block;padding:10px 20px;
-           background:#2563eb;
-           color:white;
-           text-decoration:none;
-           border-radius:6px;">
-            Reset Password
-        </a>
-    </p>
+                    <!-- Header -->
+                    <tr>
+                        <td style="background:linear-gradient(135deg,#1e40af,#2563eb);
+                                   padding:36px 40px;text-align:center;">
+                            <p style="margin:0;font-size:13px;color:#bfdbfe;
+                                      letter-spacing:2px;text-transform:uppercase;font-weight:600;">
+                                E-Barangay Integrated Services Platform
+                            </p>
+                            <h1 style="margin:12px 0 0;font-size:26px;font-weight:700;color:#ffffff;">
+                                Password Reset
+                            </h1>
+                        </td>
+                    </tr>
 
-    <p>
-        If you did not request this, you can ignore this email.
-    </p>
+                    <!-- Body -->
+                    <tr>
+                        <td style="padding:40px 40px 32px;">
 
-    <p>This link will expire in 60 minutes.</p>
+                            <!-- Lock icon -->
+                            <div style="text-align:center;margin-bottom:28px;">
+                                <div style="display:inline-flex;align-items:center;justify-content:center;
+                                            background-color:#eff6ff;border-radius:50%;
+                                            width:72px;height:72px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" style="color:#2563eb;">
+                                        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2zm3-2V7a4 4 0 1 1 8 0v4m-1 5h.01m-3 0h.01m-3 0h.01"/>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <h2 style="margin:0 0 8px;font-size:20px;font-weight:700;
+                                       color:#1e293b;text-align:center;">
+                                Hello, {{ $user->name ?? 'User' }}
+                            </h2>
+
+                            <p style="margin:0 0 20px;font-size:15px;color:#475569;
+                                      text-align:center;line-height:1.6;">
+                                We received a request to reset the password for your account.
+                                Click the button below to proceed.
+                            </p>
+
+                            <!-- CTA Button -->
+                            <div style="text-align:center;margin:32px 0;">
+                                <a href="{{ $url }}"
+                                   style="display:inline-block;padding:14px 36px;
+                                          background:linear-gradient(135deg,#1e40af,#2563eb);
+                                          color:#ffffff;text-decoration:none;
+                                          border-radius:8px;font-size:15px;font-weight:600;
+                                          letter-spacing:0.3px;
+                                          box-shadow:0 4px 14px rgba(37,99,235,0.4);">
+                                    Reset My Password
+                                </a>
+                            </div>
+
+                            <!-- Divider -->
+                            <hr style="border:none;border-top:1px solid #e2e8f0;margin:28px 0;">
+
+                            <!-- Expiry notice -->
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                    <td style="background-color:#fffbeb;border:1px solid #fde68a;
+                                               border-radius:8px;padding:14px 18px;">
+                                        <p style="margin:0;font-size:13px;color:#92400e;line-height:1.5;">
+                                            <strong>&#9888;&#65039; Link expires in 60 minutes.</strong>
+                                            If you did not request a password reset, you can safely ignore this email.
+                                            Your password will not change.
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Fallback URL -->
+                            <p style="margin:24px 0 0;font-size:12px;color:#94a3b8;
+                                      text-align:center;line-height:1.6;">
+                                If the button above doesn't work, copy and paste the link below into your browser:
+                            </p>
+                            <p style="margin:6px 0 0;font-size:11px;color:#2563eb;
+                                      text-align:center;word-break:break-all;">
+                                {{ $url }}
+                            </p>
+
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color:#f8fafc;border-top:1px solid #e2e8f0;
+                                   padding:24px 40px;text-align:center;">
+                            <p style="margin:0;font-size:12px;color:#94a3b8;line-height:1.6;">
+                                This email was sent by the <strong style="color:#64748b;">Incident Reporting System</strong>.<br>
+                                If you have questions, please contact your system administrator.
+                            </p>
+                        </td>
+                    </tr>
+
+                </table>
+                <!-- End email card -->
+
+            </td>
+        </tr>
+    </table>
+
 </body>
 </html>
