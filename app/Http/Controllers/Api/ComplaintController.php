@@ -34,8 +34,8 @@ class ComplaintController extends Controller
         $user = auth()->user();
 
         $query = $user->isAdmin()
-            ? Complaint::with('witnesses', 'customFieldValues.customField')
-            : $user->complaints()->with('witnesses', 'customFieldValues.customField');
+            ? Complaint::with('witnesses', 'customFieldValues.customField', 'appointments')
+            : $user->complaints()->with('witnesses', 'customFieldValues.customField', 'appointments');
 
         // Filter by status
         $query->when($request->status, function ($q) use ($request) {
@@ -136,7 +136,7 @@ class ComplaintController extends Controller
             ]
         );
         
-        return ComplaintResource::make($complaint->load('witnesses', 'customFieldValues.customField'))
+        return ComplaintResource::make($complaint->load('witnesses', 'customFieldValues.customField', 'appointments'))
             ->additional(['message' => 'Complaint created successfully'])
             ->response()
             ->setStatusCode(201);
@@ -149,7 +149,7 @@ class ComplaintController extends Controller
     {
         $this->authorizeComplaint($complaint);
 
-        return ComplaintResource::make($complaint->load('witnesses', 'customFieldValues.customField'));
+        return ComplaintResource::make($complaint->load('witnesses', 'customFieldValues.customField', 'appointments'));
     }
 
     /**
@@ -255,7 +255,7 @@ class ComplaintController extends Controller
             }
         }
 
-        return ComplaintResource::make($complaint->load('witnesses', 'customFieldValues.customField'))
+        return ComplaintResource::make($complaint->load('witnesses', 'customFieldValues.customField', 'appointments'))
             ->additional(['message' => 'Complaint updated successfully']);
     }
 
