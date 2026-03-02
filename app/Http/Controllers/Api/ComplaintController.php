@@ -237,11 +237,22 @@ class ComplaintController extends Controller
                     $exists = Appointment::whereBetween('scheduled_at', [$start, $end])->exists();
 
                     if (! $exists) {
-                        $complaint->appointments()->create([
+                        $appointment = $complaint->appointments()->create([
                             'title'       => 'Summon for Complaint #' . $complaint->id,
                             'description' => 'Appointment for mediating complaint #' . $complaint->id,
                             'scheduled_at' => $start,
                         ]);
+
+                        Notifier::send(
+                            $complaint->user_id,
+                            'appointment_scheduled',
+                            'An appointment has been scheduled for your complaint.',
+                            [
+                                'appointment_id' => $appointment->id,
+                                'complaint_id' => $complaint->id,
+                                'scheduled_at' => $start,
+                            ]
+                        );
 
                         $appointmentCreated = true;
                         break;
