@@ -51,7 +51,7 @@ class UpdateComplaintRequest extends FormRequest
         ];
 
         if ($this->user()->isAdmin()) {
-            $rules['status'] = 'sometimes|required|string|in:pending,dispatched,on-site,resolved,rejected';
+            $rules['status'] = 'sometimes|required|string|in:pending,in-progress,dispatched,on-site,resolved,rejected';
         }
         
         //Load active custom field rules for complaints

@@ -40,6 +40,11 @@ class Complaint extends Model
         return $this->hasMany(Witness::class);
     }
 
+    public function appointments()
+    {
+        return $this->morphMany(Appointment::class, 'reference');
+    }
+
     public function customFieldValues()
     {
         return $this->hasMany(CustomFieldValue::class);

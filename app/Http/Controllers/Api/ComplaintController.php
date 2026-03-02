@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreComplaintRequest;
 use App\Http\Requests\UpdateComplaintRequest;
 use App\Http\Resources\ComplaintResource;
+use App\Models\Appointment;
 use App\Models\Complaint;
 use App\Models\CustomField;
 use App\Models\CustomFieldValue;
@@ -212,6 +213,45 @@ class ComplaintController extends Controller
                             : $value,
                     ]
                 );
+            }
+        }
+
+        // If status is updated to in-progress, create an appointment
+        if ($complaint->wasChanged('status') && $complaint->status === 'in-progress') {
+
+            $date = now()->addDays(3)->startOfDay(); // Start searching from 3 days later
+
+            $appointmentCreated = false;
+
+            while (! $appointmentCreated) {
+
+                // Operating hours 7AM - 4PM (last slot = 4PM–5PM)
+                for ($hour = 7; $hour < 17; $hour++) {
+
+                    $scheduledAt = $date->copy()->setTime($hour, 0, 0);
+
+                    $start = $scheduledAt->copy();
+                    $end   = $scheduledAt->copy()->endOfHour();
+
+                    // checck if slot is already taken by another appointment
+                    $exists = Appointment::whereBetween('scheduled_at', [$start, $end])->exists();
+
+                    if (! $exists) {
+                        $complaint->appointments()->create([
+                            'title'       => 'Summon for Complaint #' . $complaint->id,
+                            'description' => 'Appointment for mediating complaint #' . $complaint->id,
+                            'scheduled_at' => $start,
+                        ]);
+
+                        $appointmentCreated = true;
+                        break;
+                    }
+                }
+
+                // Move to next day if no slot found
+                if (! $appointmentCreated) {
+                    $date->addDay()->startOfDay();
+                }
             }
         }
 
