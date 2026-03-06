@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\CustomFieldController;
 use App\Http\Controllers\Api\IncidentController;
 use App\Http\Controllers\Api\IncidentTypeController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\AppointmentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +22,8 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('
 Route::middleware('auth:sanctum')->group(function () {
     //Complaints
     Route::apiResource('complaints', ComplaintController::class)->only(['index', 'show', 'store', 'update']);
+    //Appointments
+    Route::apiResource('complaints.appointments', AppointmentController::class)->only(['index', 'show', 'update']);
     //Incidents
     Route::apiResource('incidents', IncidentController::class)->only(['index', 'show', 'store', 'update']);
     //Incident Types
