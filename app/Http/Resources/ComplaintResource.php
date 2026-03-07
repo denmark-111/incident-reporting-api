@@ -51,17 +51,7 @@ class ComplaintResource extends JsonResource
                 });
             }),
 
-            'appointments' => $this->whenLoaded('appointments', function () {
-                return $this->appointments->map(function ($appointment) {
-                    return [
-                        'id' => $appointment->id,
-                        'status' => $appointment->status,
-                        'title' => $appointment->title,
-                        'description' => $appointment->description,
-                        'scheduled_at' => $appointment->scheduled_at,
-                    ];
-                });
-            }),
+            'appointments' => AppointmentResource::collection($this->whenLoaded('appointments')),
             
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
