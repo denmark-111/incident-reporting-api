@@ -24,6 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('complaints', ComplaintController::class)->only(['index', 'show', 'store', 'update']);
     //Appointments
     Route::apiResource('complaints.appointments', AppointmentController::class)->only(['index', 'store', 'show', 'update']);
+    Route::get('appointments/availability', [AppointmentController::class, 'availability']);
     //Incidents
     Route::apiResource('incidents', IncidentController::class)->only(['index', 'show', 'store', 'update']);
     //Incident Types

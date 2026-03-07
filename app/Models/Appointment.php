@@ -13,6 +13,10 @@ class Appointment extends Model
         'status',
     ];
 
+    protected $casts = [
+        'scheduled_at' => 'datetime',
+    ];
+
     public function reference()
     {
         return $this->morphTo();

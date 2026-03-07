@@ -9,6 +9,8 @@ use App\Http\Resources\AppointmentResource;
 use App\Models\Appointment;
 use App\Models\Complaint;
 use App\Services\Notifier;
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 
 class AppointmentController extends Controller
@@ -95,5 +97,56 @@ class AppointmentController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    // Check appointment availability
+    public function availability(Request $request)
+    {
+        $request->validate([
+            'start' => ['required','date'],
+            'end' => ['required','date','after_or_equal:start']
+        ]);
+
+        $start = Carbon::parse($request->start);
+        $end = Carbon::parse($request->end);
+
+        $appointments = Appointment::whereBetween('scheduled_at', [$start, $end])
+            ->get()
+            ->groupBy(fn($a) => $a->scheduled_at->toDateString());
+
+        $days = [];
+
+        foreach (CarbonPeriod::create($start, $end) as $date) {
+
+            $dateString = $date->toDateString();
+
+            $taken = ($appointments[$dateString] ?? collect())
+                ->map(fn($a) => $a->scheduled_at->format('H:00'))
+                ->toArray();
+
+            $slots = [];
+
+            for ($hour = 7; $hour < 17; $hour++) {
+
+                $time = sprintf('%02d:00', $hour);
+
+                $available = !in_array($time, $taken);
+
+                $slots[] = [
+                    'time' => $time,
+                    'available' => $available
+                ];
+            }
+
+            $days[] = [
+                'date' => $dateString,
+                'is_full' => count($taken) >= 10,
+                'slots' => $slots
+            ];
+        }
+
+        return response()->json([
+            'days' => $days
+        ]);
     }
 }
