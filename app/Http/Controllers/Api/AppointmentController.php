@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreAppointmentRequest;
 use App\Http\Requests\UpdateAppointmentRequest;
+use App\Http\Resources\AppointmentResource;
 use App\Models\Appointment;
 use App\Models\Complaint;
 use App\Services\Notifier;
@@ -17,9 +18,7 @@ class AppointmentController extends Controller
      */
     public function index(Complaint $complaint)
     {
-        return response()->json(
-            $complaint->appointments()->latest()->get()
-        );
+        return AppointmentResource::collection($complaint->appointments()->latest()->get());
     }
 
     /**
@@ -43,10 +42,10 @@ class AppointmentController extends Controller
             ]
         );
 
-        return response()->json([
-            'message' => 'Appointment created successfully',
-            'data' => $appointment
-        ], 201);
+        return AppointmentResource::make($appointment)
+            ->additional(['message' => 'Appointment created successfully'])
+            ->response()
+            ->setStatusCode(201);
     }
 
     /**
@@ -58,7 +57,7 @@ class AppointmentController extends Controller
             abort(404);
         }
 
-        return response()->json($appointment);
+        return AppointmentResource::make($appointment);
     }
 
     /**
@@ -70,9 +69,9 @@ class AppointmentController extends Controller
             abort(404);
         }
 
-        $data = $request->validated();
+        $validated = $request->validated();
 
-        $appointment->update($data);
+        $appointment->update($validated);
 
         Notifier::send(
             $complaint->user_id,
@@ -86,10 +85,8 @@ class AppointmentController extends Controller
             ]
         );
 
-        return response()->json([
-            'message' => 'Appointment updated successfully',
-            'data' => $appointment
-        ]);
+        return AppointmentResource::make($appointment)
+            ->additional(['message' => 'Appointment updated successfully']);
     }
 
     /**
