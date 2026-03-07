@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreAppointmentRequest;
 use App\Http\Requests\UpdateAppointmentRequest;
 use App\Models\Appointment;
 use App\Models\Complaint;
@@ -24,9 +25,28 @@ class AppointmentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreAppointmentRequest $request, Complaint $complaint)
     {
-        //
+        $validated = $request->validated();
+
+        $appointment = $complaint->appointments()->create($validated);
+
+        Notifier::send(
+            $complaint->user_id,
+            'appointment_scheduled',
+            'Your complaint appointment has been scheduled.',
+            [
+                'appointment_id' => $appointment->id,
+                'complaint_id' => $complaint->id,
+                'scheduled_at' => $appointment->scheduled_at,
+                'status' => $appointment->status
+            ]
+        );
+
+        return response()->json([
+            'message' => 'Appointment created successfully',
+            'data' => $appointment
+        ], 201);
     }
 
     /**
