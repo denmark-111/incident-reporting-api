@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,6 +10,8 @@ class Complaint extends Model
 {
     /** @use HasFactory<\Database\Factories\ComplaintFactory> */
     use HasFactory;
+
+    use Auditable;
 
     protected $fillable = [
         'incident_date',

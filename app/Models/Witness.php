@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Model;
 
 class Witness extends Model
 {
+    use Auditable;
+    
     public $timestamps = false;
     
     protected $fillable = [
