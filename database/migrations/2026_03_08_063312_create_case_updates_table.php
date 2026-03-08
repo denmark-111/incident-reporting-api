@@ -19,6 +19,7 @@ return new class extends Migration
         //     $table->string('old_status')->nullable();
         //     $table->string('new_status')->nullable();
         //     $table->text('message')->nullable();// Message / admin note
+        //     $table->string('attachment_path')->nullable();// Optional attachment (e.g. document, image)
         //     $table->timestamps();
         // });
     }

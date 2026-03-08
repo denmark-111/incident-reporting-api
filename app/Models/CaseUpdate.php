@@ -14,6 +14,7 @@ class CaseUpdate extends Model
         'old_status',
         'new_status',
         'message',
+        'attachment_path',
     ];
 
     public function reference()

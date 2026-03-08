@@ -39,6 +39,11 @@ class Incident extends Model
         return $this->hasMany(CustomFieldValue::class);
     }
 
+    public function caseUpdates()
+    {
+        return $this->morphMany(CaseUpdate::class, 'reference');
+    }
+
     protected static function boot()
     {
         parent::boot();
