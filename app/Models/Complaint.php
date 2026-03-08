@@ -52,4 +52,36 @@ class Complaint extends Model
     {
         return $this->hasMany(CustomFieldValue::class);
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($model) {
+            CaseUpdate::create([
+                'reference_type' => Complaint::class,
+                'reference_id' => $model->id,
+                'user_id' => auth()->id(),
+                'event_type' => 'complaint_created',
+                'message' => 'Complaint created',
+            ]);
+        });
+
+        static::updated(function ($model) {
+            if ($model->wasChanged('status')) {
+                $originalStatus = $model->getOriginal('status');
+                $newStatus = $model->status;
+
+                CaseUpdate::create([
+                    'reference_type' => Complaint::class,
+                    'reference_id' => $model->id,
+                    'user_id' => auth()->id(),
+                    'event_type' => 'status_change',
+                    'old_status' => $originalStatus,
+                    'new_status' => $newStatus,
+                    'message' => "Status changed from {$originalStatus} to {$newStatus}",
+                ]);
+            }
+        });
+    }
 }
