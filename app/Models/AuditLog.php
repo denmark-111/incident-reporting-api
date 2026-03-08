@@ -24,4 +24,9 @@ class AuditLog extends Model
         'old_values' => 'json',
         'new_values' => 'json',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
