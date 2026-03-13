@@ -20,8 +20,10 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
+        // Determine login type
         $loginType = filter_var($request->identifier, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
+        // Attempt authentication
         $credentials = [
             $loginType => $request->identifier,
             'password' => $request->password,
@@ -35,6 +37,15 @@ class AuthController extends Controller
 
         $user = Auth::user();
 
+        if (!$user->is_active) {
+            Auth::logout(); // Clear session just in case
+
+            return response()->json([
+                'message' => 'Your account is inactive. Please contact support.'
+            ], 403);
+        }
+
+        // Create Sanctum token
         $token = $user->createToken('api-token')->plainTextToken;
 
         return response()->json([
