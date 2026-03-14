@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\Notifier;
 use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -86,6 +87,17 @@ class Complaint extends Model
                     'new_status' => $newStatus,
                     'message' => "Status changed from {$originalStatus} to {$newStatus}",
                 ]);
+
+                Notifier::send(
+                    $model->user->id,
+                    'complaint_status_updated',
+                    "Your complaint status has been updated to {$newStatus}",
+                    [
+                        'complaint_id' => $model->id,
+                        'old_status' => $originalStatus,
+                        'new_status' => $newStatus,
+                    ]
+                );
             }
         });
     }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\Notifier;
 use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -72,6 +73,17 @@ class Incident extends Model
                     'new_status' => $newStatus,
                     'message' => "Status changed from {$originalStatus} to {$newStatus}",
                 ]);
+
+                Notifier::send(
+                    $model->user->id,
+                    'incident_status_updated',
+                    "Your incident report status has been updated to {$newStatus}",
+                    [
+                        'incident_id' => $model->id,
+                        'old_status' => $originalStatus,
+                        'new_status' => $newStatus,
+                    ]
+                );
             }
         });
     }
