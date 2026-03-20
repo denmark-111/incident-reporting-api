@@ -225,6 +225,12 @@ class ComplaintController extends Controller
 
             while (! $appointmentCreated) {
 
+                // Skip weekends
+                if ($date->isWeekend()) {
+                    $date->addDay()->startOfDay();
+                    continue;
+                }
+
                 // Operating hours 7AM - 4PM (last slot = 4PM–5PM)
                 for ($hour = 7; $hour < 17; $hour++) {
 
