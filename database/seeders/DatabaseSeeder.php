@@ -6,6 +6,7 @@ use App\Models\IncidentType;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -18,23 +19,35 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Brian Dijamco',
-            'email' => 'brian.dijamco@gmail.com',
-            'username' => 'brian.dijamco',
-        ]);
+        User::updateOrCreate(
+            [
+                'email' => 'brian.dijamco@gmail.com'],
+            [
+                'name' => 'Brian Dijamco',
+                'username' => 'brian.dijamco',
+                'password' => Hash::make('password'),
+            ]
+        );
 
-        User::factory()->create([
-            'name' => 'Denmarc Maglipon',
-            'email' => 'denmarc.maglipon@gmail.com',
-            'username' => 'denmarc.maglipon',
-        ]);
+        User::updateOrCreate(
+            [
+                'email' => 'denmarc.maglipon@gmail.com'],
+            [
+                'name' => 'Denmarc Maglipon',
+                'username' => 'denmarc.maglipon',
+                'password' => Hash::make('password'),
+            ]
+        );
 
-        User::factory()->create([
-            'name' => 'Admin User',
-            'email' => 'admin@gmail.com',
-            'role' => 'admin',
-        ]);
+        User::updateOrCreate(
+            ['email' => 'admin@gmail.com'],
+            [
+                'name' => 'Admin User',
+                'username' => 'admin.user',
+                'password' => Hash::make('password'),
+                'role' => 'admin',
+            ]
+        );
 
         
         $defaultIncidentTypes = [
@@ -53,5 +66,10 @@ class DatabaseSeeder extends Seeder
                 ['is_custom' => false]
             );
         }
+
+        $this->call([
+            ComplaintSeeder::class,
+            IncidentSeeder::class,
+        ]);
     }
 }
