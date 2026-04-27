@@ -14,14 +14,19 @@ use App\Models\User;
 use App\Services\Notifier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class IncidentController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Incident::class);
+
         $request->validate([
             'status'        => ['sometimes', 'string'],
             'type'          => ['sometimes', 'string'],
@@ -74,6 +79,8 @@ class IncidentController extends Controller
      */
     public function store(StoreIncidentRequest $request)
     {
+        $this->authorize('create', Incident::class);
+
         $data = $request->validated();
 
         // Handle file upload if present
@@ -156,7 +163,7 @@ class IncidentController extends Controller
      */
     public function show(Incident $incident)
     {
-        $this->authorizeIncident($incident);
+        $this->authorize('view', $incident);
 
         return IncidentResource::make($incident->load('types', 'customFieldValues.customField'));
     }
@@ -166,7 +173,7 @@ class IncidentController extends Controller
      */
     public function update(UpdateIncidentRequest $request, Incident $incident)
     {
-        $this->authorizeIncident($incident);
+        $this->authorize('update', $incident);
 
         $data = $request->validated();
 
@@ -244,16 +251,4 @@ class IncidentController extends Controller
         //
     }
 
-    private function authorizeIncident(Incident $incident)
-    {
-        $user = auth()->user();
-
-        if ($user->isAdmin()) {
-            return;
-        }
-
-        if ($incident->user_id !== $user->id) {
-            abort(403, 'Unauthorized');
-        }
-    }
 }
