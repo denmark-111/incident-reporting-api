@@ -14,14 +14,19 @@ use App\Models\User;
 use App\Services\Notifier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ComplaintController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Complaint::class);
+
         $request->validate([
             'status'        => ['sometimes', 'string'],
             'severity'      => ['sometimes', 'string'],
@@ -77,6 +82,8 @@ class ComplaintController extends Controller
      */
     public function store(StoreComplaintRequest $request)
     {
+        $this->authorize('create', Complaint::class);
+        
         $data = $request->validated();
 
         // Extract and remove witnesses data from the main data array, will be handled separately
@@ -147,7 +154,7 @@ class ComplaintController extends Controller
      */
     public function show(Complaint $complaint)
     {
-        $this->authorizeComplaint($complaint);
+        $this->authorize('view', $complaint);
 
         return ComplaintResource::make($complaint->load('witnesses', 'customFieldValues.customField', 'appointments'));
     }
@@ -157,7 +164,7 @@ class ComplaintController extends Controller
      */
     public function update(UpdateComplaintRequest $request, Complaint $complaint)
     {
-        $this->authorizeComplaint($complaint);
+        $this->authorize('update', $complaint);
         
         $data = $request->validated();
 
@@ -284,16 +291,4 @@ class ComplaintController extends Controller
         //
     }
 
-    private function authorizeComplaint(Complaint $complaint)
-    {
-        $user = auth()->user();
-
-        if ($user->isAdmin()) {
-            return;
-        }
-
-        if ($complaint->user_id !== $user->id) {
-            abort(403, 'Unauthorized');
-        }
-    }
 }
