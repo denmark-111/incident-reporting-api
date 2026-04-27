@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Schema::create('incident_types', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->string('name'); // I'll make this unique later
-        //     $table->boolean('is_custom')->default(false);
-        // });
+        Schema::create('incident_types', function (Blueprint $table) {
+            $table->id();
+            $table->string('name'); // I'll make this unique later
+            $table->boolean('is_custom')->default(false);
+        });
     }
 
     /**

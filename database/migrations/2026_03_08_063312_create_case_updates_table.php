@@ -11,17 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Schema::create('case_updates', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->morphs('reference');
-        //     $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
-        //     $table->string('event_type');// Type of update (e.g. note, status change, appointment update)
-        //     $table->string('old_status')->nullable();
-        //     $table->string('new_status')->nullable();
-        //     $table->text('message')->nullable();// Message / admin note
-        //     $table->string('attachment_path')->nullable();// Optional attachment (e.g. document, image)
-        //     $table->timestamps();
-        // });
+        Schema::create('case_updates', function (Blueprint $table) {
+            $table->id();
+            $table->morphs('reference');
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
+            $table->string('event_type');// Type of update (e.g. note, status change, appointment update)
+            $table->string('old_status')->nullable();
+            $table->string('new_status')->nullable();
+            $table->text('message')->nullable();// Message / admin note
+            $table->string('attachment_path')->nullable();// Optional attachment (e.g. document, image)
+            $table->timestamps();
+        });
     }
 
     /**

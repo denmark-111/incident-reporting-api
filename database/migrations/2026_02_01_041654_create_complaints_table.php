@@ -11,27 +11,27 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Schema::create('complaints', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->date('incident_date');
-        //     $table->time('incident_time');
-        //     $table->text('location');
-        //     $table->decimal('latitude', 10, 7);
-        //     $table->decimal('longitude', 10, 7);
-        //     $table->string('type');
-        //     $table->string('severity');
-        //     $table->text('description');
-        //     $table->string('complainant_name');
-        //     $table->string('complainant_contact');
-        //     $table->string('respondent_name');
-        //     $table->string('respondent_address')->nullable();
-        //     $table->string('desired_resolution')->nullable();
-        //     $table->string('evidence_path')->nullable();
-        //     $table->string('additional_notes')->nullable();
-        //     $table->timestamps();
-        //     $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-        //     $table->string('status')->default('pending');
-        // });
+        Schema::create('complaints', function (Blueprint $table) {
+            $table->id();
+            $table->date('incident_date');
+            $table->time('incident_time');
+            $table->text('location');
+            $table->decimal('latitude', 10, 7);
+            $table->decimal('longitude', 10, 7);
+            $table->string('type');
+            $table->string('severity');
+            $table->text('description');
+            $table->string('complainant_name');
+            $table->string('complainant_contact');
+            $table->string('respondent_name');
+            $table->string('respondent_address')->nullable();
+            $table->string('desired_resolution')->nullable();
+            $table->string('evidence_path')->nullable();
+            $table->string('additional_notes')->nullable();
+            $table->timestamps();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->string('status')->default('pending');
+        });
     }
 
     /**

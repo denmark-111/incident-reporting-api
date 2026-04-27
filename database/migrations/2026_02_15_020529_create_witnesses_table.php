@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Schema::create('witnesses', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->foreignId('complaint_id')->constrained()->cascadeOnDelete();
-        //     $table->string('name');
-        //     $table->string('contact')->nullable();
-        // });
+        Schema::create('witnesses', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('complaint_id')->constrained()->cascadeOnDelete();
+            $table->string('name');
+            $table->string('contact')->nullable();
+        });
     }
 
     /**

@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Schema::create('appointments', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->morphs('reference');
-        //     $table->string('title');
-        //     $table->text('description')->nullable();
-        //     $table->dateTime('scheduled_at');
-        //     $table->enum('status', ['scheduled', 'rescheduled', 'completed', 'cancelled', 'no-show'])->default('scheduled');
-        //     $table->timestamps();
-        // });
+        Schema::create('appointments', function (Blueprint $table) {
+            $table->id();
+            $table->morphs('reference');
+            $table->string('title');
+            $table->text('description')->nullable();
+            $table->dateTime('scheduled_at');
+            $table->enum('status', ['scheduled', 'rescheduled', 'completed', 'cancelled', 'no-show'])->default('scheduled');
+            $table->timestamps();
+        });
     }
 
     /**
