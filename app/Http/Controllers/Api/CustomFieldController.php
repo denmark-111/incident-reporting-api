@@ -8,14 +8,19 @@ use App\Http\Requests\UpdateCustomFieldRequest;
 use App\Http\Resources\CustomFieldResource;
 use App\Models\CustomField;
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class CustomFieldController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', CustomField::class);
+
         $request->validate([
             'field_for' => ['sometimes', 'in:incident,complaint'],
             'is_active' => ['sometimes', 'boolean'],
@@ -43,6 +48,8 @@ class CustomFieldController extends Controller
      */
     public function store(StoreCustomFieldRequest $request)
     {
+        $this->authorize('create', CustomField::class);
+
         $validated = $request->validated();
 
         $customField = CustomField::create([
@@ -67,6 +74,8 @@ class CustomFieldController extends Controller
      */
     public function show(CustomField $customField)
     {
+        $this->authorize('view', $customField);
+
         return CustomFieldResource::make($customField);
     }
 
@@ -75,6 +84,8 @@ class CustomFieldController extends Controller
      */
     public function update(UpdateCustomFieldRequest $request, CustomField $customField)
     {
+        $this->authorize('update', $customField);
+
         $validated = $request->validated();
 
         if (isset($validated['field_label'])) {
