@@ -14,6 +14,8 @@ class AuditLogController extends Controller
      */
     public function index(Request $request)
     {
+        abort_if(!auth()->user()->isAdmin(), 403, 'This action is unauthorized.');
+        
         $request->validate([
             'action'        => ['sometimes', 'string'],
             'user_id'       => ['sometimes', 'integer'],
@@ -46,6 +48,8 @@ class AuditLogController extends Controller
      */
     public function show(AuditLog $auditLog)
     {
+        abort_if(!auth()->user()->isAdmin(), 403, 'This action is unauthorized.');
+        
         return new AuditLogResource($auditLog->load('user'));
     }
 }
