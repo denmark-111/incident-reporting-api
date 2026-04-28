@@ -12,14 +12,19 @@ use App\Services\Notifier;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class AppointmentController extends Controller
 {
+    use AuthorizesRequests;
+    
     /**
      * Display a listing of the resource.
      */
     public function index(Complaint $complaint)
     {
+        $this->authorize('view', $complaint);
+
         return AppointmentResource::collection($complaint->appointments()->latest()->get());
     }
 
@@ -28,6 +33,8 @@ class AppointmentController extends Controller
      */
     public function store(StoreAppointmentRequest $request, Complaint $complaint)
     {
+        $this->authorize('create', Appointment::class);
+
         $validated = $request->validated();
 
         $appointment = $complaint->appointments()->create($validated);
@@ -59,6 +66,8 @@ class AppointmentController extends Controller
             abort(404);
         }
 
+        $this->authorize('view', $appointment);
+
         return AppointmentResource::make($appointment);
     }
 
@@ -70,6 +79,8 @@ class AppointmentController extends Controller
         if ($appointment->reference_id !== $complaint->id) {
             abort(404);
         }
+
+        $this->authorize('update', $appointment);
 
         $validated = $request->validated();
 

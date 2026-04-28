@@ -38,8 +38,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('notifications', [NotificationController::class, 'index']);
     Route::patch('notifications', [NotificationController::class, 'update']);
     //Custom Fields
-    Route::apiResource('custom-fields', CustomFieldController::class)->only(['index', 'store', 'show', 'update']); //guard later for admin only
+    Route::apiResource('custom-fields', CustomFieldController::class)->only(['index', 'store', 'show', 'update']);
 
     //Audit Logs
-    Route::apiResource('audit-logs', AuditLogController::class)->only(['index', 'show']); //guard later for admin only
+    Route::apiResource('audit-logs', AuditLogController::class)->only(['index', 'show']);
 });
