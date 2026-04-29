@@ -138,8 +138,8 @@ class IncidentController extends Controller
             }
         }
         
-        // Notify all admins
-        $admins = User::where('role', 'admin')->pluck('id')->toArray();
+        // Notify all users with admin-level access to the subsystem
+        $admins = User::subsystemAdmins()->pluck('id')->toArray();
 
         Notifier::send(
             $admins,
