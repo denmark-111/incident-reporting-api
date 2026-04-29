@@ -12,7 +12,7 @@ class AppointmentPolicy
     // Admin can do everything
     public function before(User $user, $ability): ?bool
     {
-        if ($user->isAdmin()) {
+        if ($user->hasSubsystemAdminAccess()) {
             return true;
         }
 

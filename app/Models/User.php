@@ -53,9 +53,22 @@ class User extends Authenticatable
         $this->notify(new CustomResetPasswordNotification($token));
     }
 
+    // Check if the user is an ADMIN
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
+    }
+
+    // Check if the user had admin-level access to the subsystem (admin or staff2)
+    public function hasSubsystemAdminAccess(): bool
+    {
+        return in_array($this->role, ['admin', 'staff2']);
+    }
+
+    // Scope to filter users with admin-level access to the subsystem
+    public function scopeSubsystemAdmins($query)
+    {
+        return $query->whereIn('role', ['admin', 'staff2']);
     }
 
     public function complaints()

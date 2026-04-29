@@ -50,7 +50,7 @@ class UpdateComplaintRequest extends FormRequest
             'custom_fields' => ['sometimes', 'array'],
         ];
 
-        if ($this->user()->isAdmin()) {
+        if ($this->user()->hasSubsystemAdminAccess()) {
             $rules['status'] = 'sometimes|required|string|in:pending,in-progress,dispatched,on-site,resolved,rejected';
         }
         

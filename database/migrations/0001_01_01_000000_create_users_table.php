@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('username');
             $table->string('password');
-            $table->enum('role', ['admin', 'resident'])->default('resident');
+            $table->enum('role', ['admin', 'staff1', 'staff2', 'staff3', 'resident'])->default('resident');
             $table->rememberToken();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
@@ -40,5 +40,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('users');
+        Schema::dropIfExists('sessions');
     }
 };

@@ -37,7 +37,7 @@ class IncidentController extends Controller
 
         $user = auth()->user();
 
-        $query = $user->isAdmin()
+        $query = $user->hasSubsystemAdminAccess()
             ? Incident::with('types', 'customFieldValues.customField')
             : $user->incidents()->with('types', 'customFieldValues.customField');
 

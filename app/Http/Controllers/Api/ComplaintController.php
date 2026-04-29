@@ -38,7 +38,7 @@ class ComplaintController extends Controller
 
         $user = auth()->user();
 
-        $query = $user->isAdmin()
+        $query = $user->hasSubsystemAdminAccess()
             ? Complaint::with('witnesses', 'customFieldValues.customField', 'appointments')
             : $user->complaints()->with('witnesses', 'customFieldValues.customField', 'appointments');
 
