@@ -1,59 +1,342 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Incident Reporting API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A Laravel-based REST API for the Incident & Complaint Management subsystem of the E-Barangay System. This API handles incident reports, complaints, appointments, notifications, audit logs, and case updates used by the frontend application.
 
-## About Laravel
+This project was originally developed as part of a larger barangay management platform where multiple backend services support a shared frontend application and database.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Overview
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+The Incident Reporting API serves as the backend for Sub-system 3 of the E-Barangay System. It provides endpoints for:
 
-## Learning Laravel
+* Incident reporting
+* Complaint filing
+* Case update tracking
+* Appointment scheduling
+* Notifications
+* Audit logging
+* Dynamic custom fields
+* Authentication and password management
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+Although integrated into the larger E-Barangay platform, this API can run independently as a standalone Laravel service.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## System Architecture
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```
+Frontend Application
+├── Resident API
+├── Documents API
+└── Incident Reporting API (this repository)
+```
 
-### Premium Partners
+All backend services connect to a shared MySQL database while remaining separated into individual backend projects/modules.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+---
 
-## Contributing
+## Tech Stack
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+* Laravel
+* Laravel Sanctum
+* MySQL
+* PHP
+* REST API Architecture
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Features
 
-## Security Vulnerabilities
+### Authentication
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+* User login/logout
+* Forgot password
+* Reset password
+* Change password
+* Sanctum token authentication
 
-## License
+### Incident Management
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+* Report incidents
+* Retrieve incident records
+* Update incident status/details
+* Incident case updates/history
+
+### Complaint Management
+
+* File complaints
+* View complaint records
+* Update complaint status/details
+* Complaint case updates/history
+
+### Appointment System
+
+* Appointment scheduling
+* Appointment availability checking
+* Appointment management
+
+### Notifications
+
+* Retrieve notifications
+* Mark notifications as read/unread
+
+### Custom Fields
+
+* Dynamic field management
+* Configurable form fields
+
+### Audit Logs
+
+* Audit trail tracking
+* View system activity logs
+
+---
+
+## API Routes
+
+### Authentication
+
+| Method | Endpoint               |
+| ------ | ---------------------- |
+| POST   | `/api/login`           |
+| POST   | `/api/logout`          |
+| POST   | `/api/forgot-password` |
+| POST   | `/api/reset-password`  |
+| POST   | `/api/change-password` |
+
+---
+
+### Complaints
+
+| Method | Endpoint               |
+| ------ | ---------------------- |
+| GET    | `/api/complaints`      |
+| GET    | `/api/complaints/{id}` |
+| POST   | `/api/complaints`      |
+| PUT    | `/api/complaints/{id}` |
+
+#### Complaint Updates
+
+| Method | Endpoint                              |
+| ------ | ------------------------------------- |
+| GET    | `/api/complaints/{complaint}/updates` |
+| POST   | `/api/complaints/{complaint}/updates` |
+
+---
+
+### Appointments
+
+| Method | Endpoint                                        |
+| ------ | ----------------------------------------------- |
+| GET    | `/api/complaints/{complaint}/appointments`      |
+| POST   | `/api/complaints/{complaint}/appointments`      |
+| GET    | `/api/complaints/{complaint}/appointments/{id}` |
+| PUT    | `/api/complaints/{complaint}/appointments/{id}` |
+| GET    | `/api/appointments/availability`                |
+
+---
+
+### Incidents
+
+| Method | Endpoint              |
+| ------ | --------------------- |
+| GET    | `/api/incidents`      |
+| GET    | `/api/incidents/{id}` |
+| POST   | `/api/incidents`      |
+| PUT    | `/api/incidents/{id}` |
+
+#### Incident Updates
+
+| Method | Endpoint                            |
+| ------ | ----------------------------------- |
+| GET    | `/api/incidents/{incident}/updates` |
+| POST   | `/api/incidents/{incident}/updates` |
+
+---
+
+### Incident Types
+
+| Method | Endpoint              |
+| ------ | --------------------- |
+| GET    | `/api/incident-types` |
+
+---
+
+### Notifications
+
+| Method | Endpoint             |
+| ------ | -------------------- |
+| GET    | `/api/notifications` |
+| PATCH  | `/api/notifications` |
+
+---
+
+### Custom Fields
+
+| Method | Endpoint                  |
+| ------ | ------------------------- |
+| GET    | `/api/custom-fields`      |
+| GET    | `/api/custom-fields/{id}` |
+| POST   | `/api/custom-fields`      |
+| PUT    | `/api/custom-fields/{id}` |
+
+---
+
+### Audit Logs
+
+| Method | Endpoint               |
+| ------ | ---------------------- |
+| GET    | `/api/audit-logs`      |
+| GET    | `/api/audit-logs/{id}` |
+
+---
+
+## Authentication
+
+This API uses Laravel Sanctum for authenticated routes.
+
+Protected endpoints require:
+
+```http
+Authorization: Bearer {token}
+```
+
+---
+
+## Environment Configuration
+
+This project includes a `.env.example` file generated by Laravel.
+
+To run the project, copy it:
+
+```bash
+cp .env.example .env
+```
+
+### Required Environment Variables
+
+Aside from database configuration, this project also requires email configuration for password reset and notifications:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=your_database
+DB_USERNAME=root
+DB_PASSWORD=
+
+MAIL_MAILER=smtp
+MAIL_HOST=
+MAIL_PORT=
+MAIL_USERNAME=
+MAIL_PASSWORD=
+MAIL_FROM_ADDRESS=
+MAIL_FROM_NAME=
+```
+
+---
+
+## Database Setup
+
+### Standalone Setup (This API Only)
+
+Configure your `.env` file and run:
+
+```bash
+php artisan migrate
+```
+
+---
+
+### Full System Setup (All Subsystems)
+
+If running the complete E-Barangay system (shared database setup), use the SQL dumps located here:
+
+```
+database/sql/
+```
+
+This folder contains the shared database structure used by all subsystem APIs. Files are organized by date to reflect system updates.
+
+---
+
+## Postman Collection
+
+You can test and explore all endpoints using the official Postman workspace:
+
+[Incident Reporting API Postman Workspace](https://www.postman.com/maglipon-denmarc-amar-1697302/workspace/incident-reporting-api)
+
+---
+
+## Project Structure
+
+```bash
+app/
+├── Http/
+│   └── Controllers/
+│       └── Api/
+├── Models/
+├── Services/
+├── Notifications/
+├── Policies/
+└── Traits/
+
+routes/
+└── api.php
+```
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+* PHP 8+
+* Composer
+* MySQL
+
+---
+
+## Installation
+
+```bash
+git clone https://github.com/denmark-111/incident-reporting-api.git
+
+cd incident-reporting-api
+
+composer install
+
+cp .env.example .env
+
+php artisan key:generate
+
+php artisan migrate
+
+php artisan storage:link
+```
+
+---
+
+## Running the Server
+
+```bash
+php artisan serve
+```
+
+Default local URL:
+
+```
+http://127.0.0.1:8000
+```
+
+---
+
+## Related System
+
+This API is part of the larger **E-Barangay System**, which includes:
+
+* Resident Management System
+* Document Services System
+* Incident & Complaint Management System
+
